@@ -92,7 +92,11 @@
           <ul class="navbar-nav ms-auto d-flex flex-row">
             <!-- Avatar -->
             <li class="nav-item dropdown d-flex">
+              {% if user.is_authenticated %}
+              <h3 class="mt-auto me-2">{{user.first_name}}</h3>
+              {% else %}
               <h3 class="mt-auto me-2">User</h3>
+              {% endif %}
               <a
                 class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center"
                 href="#"
