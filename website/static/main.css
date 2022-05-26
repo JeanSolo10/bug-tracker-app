@@ -2,7 +2,7 @@ body {
   background-color: #fbfbfb;
 }
 @media (min-width: 991.98px) {
-  main {
+  .logged-in-main {
     padding-left: 240px;
   }
 }

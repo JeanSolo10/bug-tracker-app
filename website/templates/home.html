@@ -1,4 +1,10 @@
-{% extends "base.html" %} {% block title %} Dashboard {% endblock %}
-{% block content %}
-<h1 align="center">Dashboard</h1>
-{% endblock %}
+{% extends "base.html" %} {% block title %} Dashboard {% endblock %} {% block
+main %}
+<main style="margin-top: 58px" class="logged-in-main">
+  <div class="container pt-4">
+    {% block content %}
+    <h1 align="center">Dashboard</h1>
+    {% endblock %}
+  </div>
+</main>
+{% endblock%}

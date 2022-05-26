@@ -22,9 +22,9 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
+    {% block navbar %}
     <header>
       <!-- Sidebar -->
-      {% block navbar %}
       <nav
         id="sidebarMenu"
         class="collapse d-lg-block sidebar collapse bg-white"
@@ -92,7 +92,11 @@
           <ul class="navbar-nav ms-auto d-flex flex-row">
             <!-- Avatar -->
             <li class="nav-item dropdown d-flex">
+              {% if user.is_authenticated %}
+              <h3 class="mt-auto me-2">{{user.first_name}}</h3>
+              {% else %}
               <h3 class="mt-auto me-2">User</h3>
+              {% endif %}
               <a
                 class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center"
                 href="#"
@@ -121,15 +125,36 @@
         <!-- Container wrapper -->
       </nav>
       <!-- Navbar -->
-      {% endblock %}
     </header>
+    {% endblock %}
 
-    <!--Main Navigation-->
-    <main style="margin-top: 58px">
-      <div class="container pt-4">
-        <div class="container">{% block content %} {% endblock %}</div>
-      </div>
-    </main>
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %} {% if category ==
+    'error' %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+    <!-- Main -->
+    {% block main %} {% block content %} {% endblock %} {% endblock %}
 
     <!--Scripts-->
     <script
