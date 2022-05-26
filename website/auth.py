@@ -29,7 +29,8 @@ def login():
 
 @auth.route('logout')
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for('auth.login'))
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
@@ -40,8 +41,9 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
-
         user = User.query.filter_by(email=email).first()
+
+        print(request.form)
 
         if user:
             flash('Email already exists!', category='error')
