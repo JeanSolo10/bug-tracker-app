@@ -43,8 +43,6 @@ def sign_up():
 
         user = User.query.filter_by(email=email).first()
 
-        print(request.form)
-
         if user:
             flash('Email already exists!', category='error')
         elif len(email) < 4:
