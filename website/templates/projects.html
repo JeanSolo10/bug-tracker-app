@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block title %} Projects {% endblock %} {% block
+main %}
+<main style="margin-top: 58px" class="logged-in-main">
+  <div class="container pt-2">
+    {% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-between">
+            <div class="title">
+                <h1>Projects</h1>
+            </div>
+            <div class="add-project-btn my-auto">
+                <a href="/projects/new" class="btn btn-primary">Create Project</a>
+            </div>
+        </div>
+      </div>
+      {% if user.projects %}
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="col-3">Project Name</th>
+              <th scope="col" class="col-7">Description</th>
+              <th scope="col" class="col-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for project in user.projects %}
+            <tr>
+              <td>{{project.name}}</td>
+              <td>{{project.description}}</td>
+              <td>
+                <a href="/projects/{{project.id}}/details">Details</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p>No projects have been added</p>
+      {% endif %}
+    </div>
+    {% endblock %}
+  </div>
+</main>
+{% endblock%}
