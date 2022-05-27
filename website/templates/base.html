@@ -40,7 +40,7 @@
               ><span>Main dashboard</span>
             </a>
             <a
-              href="#"
+              href="/projects"
               class="list-group-item list-group-item-action py-2 ripple"
             >
               <i class="fas fa-tasks fw me-3"></i><span>Projects</span>
@@ -94,8 +94,6 @@
             <li class="nav-item dropdown d-flex">
               {% if user.is_authenticated %}
               <h3 class="mt-auto me-2">{{user.first_name}}</h3>
-              {% else %}
-              <h3 class="mt-auto me-2">User</h3>
               {% endif %}
               <a
                 class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center"
@@ -126,8 +124,49 @@
       </nav>
       <!-- Navbar -->
     </header>
-    {% endblock %}
-
+    {% endblock %} {% if user.is_authenticated %}
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %} {% if category ==
+    'error' %}
+    <div
+      class="alert alert-danger alert-dismissible fade show logged-in-main"
+      style="
+        margin-top: 70px;
+        margin-left: 250px;
+        padding: 1rem;
+        margin-right: 10px;
+      "
+      role="alert"
+    >
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% else %}
+    <div
+      class="alert alert-success alert-dismissible fade show logged-in-main"
+      style="
+        margin-top: 70px;
+        margin-left: 250px;
+        padding: 1rem;
+        margin-right: 10px;
+      "
+      role="alert"
+    >
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %} {% else %}
     <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==
@@ -151,7 +190,7 @@
         aria-label="Close"
       ></button>
     </div>
-    {% endif %} {% endfor %} {% endif %} {% endwith %}
+    {% endif %} {% endfor %} {% endif %} {% endwith %} {% endif %}
 
     <!-- Main -->
     {% block main %} {% block content %} {% endblock %} {% endblock %}

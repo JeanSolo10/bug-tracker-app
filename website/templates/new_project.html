@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block title %} Project {% endblock %} {% block main
+%}
+<main style="margin-top: 58px" class="logged-in-main">
+  <div class="container pt-2">
+    {% block content %}
+    <form method="POST">
+      <h3 align="center">Project Details</h3>
+      <div class="form-group">
+        <label for="name">Project Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          placeholder="Enter name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="description">Project Description</label>
+        <input
+          type="text"
+          class="form-control"
+          id="description"
+          name="description"
+          placeholder="Enter description"
+        />
+      </div>
+      <div class="form-group">
+        <label>Add members:</label>
+        <select
+          name="members"
+          class="form-select"
+          multiple
+          aria-label="multiple select example"
+        >
+          {% for singleUser in userList %}
+          <option value="{{singleUser.id}}">
+            {{singleUser.first_name}} {{singleUser.last_name}}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary">Create Project</button>
+    </form>
+    {% endblock %}
+  </div>
+</main>
+{% endblock%}
