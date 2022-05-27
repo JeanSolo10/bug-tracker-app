@@ -1,4 +1,3 @@
-from email.policy import default
 from time import timezone
 from . import db
 from flask_login import UserMixin
@@ -24,14 +23,15 @@ class Project(db.Model):
     name = db.Column(db.String(80), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-    tickets = db.relationship('Ticket')
+    project_tickets = db.relationship('Ticket', cascade='all, delete')
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text)
     name = db.Column(db.String(80), nullable=False)
-    submitted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     status = db.Column(db.String(15))
-    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'))
     type = db.Column(db.String(25))
     priority = db.Column(db.String(25))
+    submitted_by = db.Column(db.String(300))
+    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'))
+    project_reference = db.Column(db.Integer, db.ForeignKey('project.id'))
