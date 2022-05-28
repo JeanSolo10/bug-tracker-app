@@ -1,3 +1,4 @@
+from distutils.log import error
 from nis import cat
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
@@ -57,14 +58,20 @@ def new_project():
     users = load_all_users()
     return render_template("new_project.html", user=current_user, userList=users)    
 
-@views.route('/projects/<id>/details', methods=['GET', 'POST'])
+@views.route('/projects/<id>/details/<int:page_num>', methods=['GET', 'POST'])
 @login_required
-def project_details(id):
+def project_details(id, page_num):
     project = Project.query.filter_by(id=id).first()
     members = project.members
-    tickets = Ticket.query.filter_by(project_reference=id)
+    tickets = Ticket.query.filter_by(project_reference=id).order_by(Ticket.date.desc()).paginate(per_page=6, page=page_num, error_out=True)
+    
+    has_next_page = tickets.has_next
+    has_prev_page = tickets.has_prev
 
-    return render_template("project_details.html", user=current_user, project=project, members=members, tickets=tickets)
+    next_page = tickets.next_num
+    prev_page = tickets.prev_num
+    
+    return render_template("project_details.html", user=current_user, project=project, members=members, tickets=tickets, has_next_page=has_next_page, has_prev_page=has_prev_page, next_page=next_page, prev_page=prev_page)
 
 def load_all_users():
     return User.query.all()
@@ -123,7 +130,7 @@ def new_ticket(id):
             db.session.add(new_ticket)
             db.session.commit()
             flash('Ticket created!', category='success')
-            return redirect(url_for('views.project_details', id=id))
+            return redirect(url_for('views.project_details', id=id, page_num=1))
 
     
     project = Project.query.filter_by(id=id).first()
