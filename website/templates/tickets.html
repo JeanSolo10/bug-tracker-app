@@ -1,0 +1,56 @@
+{% extends "base.html" %} {% block title %} Projects {% endblock %} {% block
+main %}
+<main style="margin-top: 58px" class="logged-in-main">
+  {% block content %}
+  <div class="container-fluid pt-4">
+    <div class="d-flex justify-content-between">
+      <div class="title">
+        <h1>Tickets</h1>
+      </div>
+    </div>
+    {% if user.tickets %}
+    <div class="table-wrapper card px-2 py-2">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Ticket Name</th>
+            <th scope="col">Project</th>
+            <th scope="col">Status</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Type</th>
+            <th scope="col">Created on</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ticket in user.tickets %}
+          <tr>
+            <td>{{ticket.name}}</td>
+            <td>{{ticket.ticket_project.name}}</td>
+            <td>{{ticket.status}}</td>
+            <td>{{ticket.priority}}</td>
+            <td>{{ticket.type}}</td>
+            <td>{{ticket.date}}</td>
+            <td>
+              <a
+                href="/project/{{ticket.ticket_project.id}}/ticket/{{ticket.id}}"
+                >Details</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No projects have been added</p>
+    {% endif %}
+  </div>
+  {% endblock %}
+</main>
+{% block nav_js%}
+<script>
+  document.getElementsByClassName("active")[0].classList.remove("active");
+  document.getElementById("tickets").classList.add("active");
+</script>
+{% endblock %} {% endblock%}
