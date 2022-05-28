@@ -65,6 +65,10 @@ def load_all_users():
 # projects routing #
 
 # tickets routing #
+@views.route('/tickets')
+@login_required
+def tickets():
+    return render_template("tickets.html", user=current_user)
 
 @views.route('/project/<id>/ticket/<ticket_id>', methods=['GET', 'POST'])
 @login_required

@@ -40,4 +40,9 @@ main %}
   </div>
   {% endblock %}
 </main>
-{% endblock%}
+{% block nav_js%}
+<script>
+  document.getElementsByClassName("active")[0].classList.remove("active");
+  document.getElementById("projects").classList.add("active");
+</script>
+{% endblock %} {% endblock%}

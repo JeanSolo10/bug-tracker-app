@@ -32,9 +32,10 @@
         <div class="position-sticky">
           <div class="list-group list-group-flush mx-3 mt-4">
             <a
-              href="#"
+              href="/"
               class="list-group-item list-group-item-action py-2 ripple active"
               aria-current="true"
+              id="dashboard"
             >
               <i class="fas fa-tachometer-alt fa-fw me-3"></i
               ><span>Main dashboard</span>
@@ -42,22 +43,27 @@
             <a
               href="/projects"
               class="list-group-item list-group-item-action py-2 ripple"
+              id="projects"
             >
-              <i class="fas fa-tasks fw me-3"></i><span>Projects</span>
+              <i class="fas fa-tasks fw me-3"></i><span>My Projects</span>
             </a>
             <a
-              href="#"
+              href="/tickets"
               class="list-group-item list-group-item-action py-2 ripple"
-              ><i class="fas fa-ticket-alt fw me-3"></i><span>Tickets</span></a
+              id="tickets"
+              ><i class="fas fa-ticket-alt fw me-3"></i
+              ><span>My Tickets</span></a
             >
             <a
               href="#"
               class="list-group-item list-group-item-action py-2 ripple"
+              id="admin"
               ><i class="fas fa-users fa-fw me-3"></i><span>Admin</span></a
             >
             <a
               href="#"
               class="list-group-item list-group-item-action py-2 ripple"
+              id="profile"
               ><i class="fas fa-address-card fa-fw me-3"></i
               ><span>Profile</span></a
             >
@@ -206,5 +212,11 @@
       integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
       crossorigin="anonymous"
     ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='index.js') }}"
+    ></script>
+
+    {% block nav_js%} {% endblock %}
   </body>
 </html>
