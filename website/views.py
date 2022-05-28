@@ -1,7 +1,7 @@
 from nis import cat
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Project, User
+from .models import Project, User, Ticket, Comment
 from . import db
 
 views = Blueprint('views', __name__)
@@ -32,7 +32,7 @@ def new_project():
             flash('Enter description', category='error')
         elif len(name) < 2:
             flash('Project Name must be greater than 1 character', category='error')
-        elif len(name) < 4:
+        elif len(description) < 4:
             flash('Project Description must be greater than 3 character', category='error')
         else:
             new_project = Project(name=name, description=description, owner_id=owner_id)
@@ -53,12 +53,68 @@ def new_project():
 @views.route('/projects/<id>/details', methods=['GET', 'POST'])
 @login_required
 def project_details(id):
-    project = Project.query.filter_by(id=id)
-    members = project[0].members
+    project = Project.query.filter_by(id=id).first()
+    members = project.members
+    tickets = Ticket.query.filter_by(project_reference=id)
 
-    return render_template("project_details.html", user=current_user, projects=project, members=members)
+    return render_template("project_details.html", user=current_user, project=project, members=members, tickets=tickets)
 
 def load_all_users():
     return User.query.all()
 
 # projects routing #
+
+# tickets routing #
+
+@views.route('/project/<id>/ticket/<ticket_id>', methods=['GET', 'POST'])
+@login_required
+def ticket_details(id, ticket_id):
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
+    comments = Comment.query.filter_by(ticket_reference=ticket_id)
+    
+    if request.method == 'POST':
+        comment = request.form.get('comment')
+
+        if len(comment) < 1:
+            flash('Comment is too short!', category='error')
+        else:
+            new_comment = Comment(comment=comment, author=current_user.id, ticket_reference=ticket_id)
+            db.session.add(new_comment)
+            db.session.commit()
+            flash('Comment added!', category='success')
+
+    
+    return render_template("ticket_details.html", user=current_user, ticket=ticket, comments=comments)
+
+@views.route('/project/<id>/ticket/new/', methods=['GET', 'POST'])
+@login_required
+def new_ticket(id):
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        assigned_to = request.form.getlist('developer')[0]
+        type = request.form.getlist('type')[0]
+        priority = request.form.getlist('priority')[0]
+        status = request.form.getlist('status')[0]
+        submitted_by = current_user.first_name + " " + current_user.last_name
+        project_reference = id
+
+        if not name:
+            flash('Enter name', category='error')
+        elif not description:
+            flash('Enter description', category='error')
+        elif len(name) < 2:
+            flash('Project Name must be greater than 1 character', category='error')
+        elif len(description) < 4:
+            flash('Project Description must be greater than 3 character', category='error')
+        else:
+            new_ticket = Ticket(name=name, description=description, type=type, priority=priority, status=status, submitted_by=submitted_by, project_reference=project_reference, assigned_to=assigned_to)
+            db.session.add(new_ticket)
+            db.session.commit()
+            flash('Ticket created!', category='success')
+            return redirect(url_for('views.project_details', id=id))
+
+    
+    project = Project.query.filter_by(id=id).first()
+    
+    return render_template("new_ticket.html", user=current_user, project_members=project.members) 
