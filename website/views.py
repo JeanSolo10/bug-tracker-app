@@ -3,13 +3,20 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .models import Project, User, Ticket, Comment
 from . import db
+from collections import Counter
 
 views = Blueprint('views', __name__)
 
 @views.route('/')
 @login_required
 def home():
-    return render_template("home.html", user=current_user)
+    priority_occurrences = [ticket.priority for ticket in current_user.tickets]
+    priority_labels = ["Low", "Medium", "High"]
+    priority_values = [Counter(priority_occurrences)["Low"], Counter(priority_occurrences)["Medium"], Counter(priority_occurrences)["High"]]
+    status_occurances = [ticket.status for ticket in current_user.tickets]
+    status_labels = ["New", "In Progress", "Additional Info Required"]
+    status_values = [Counter(status_occurances)["New"], Counter(status_occurances)["In Progress"], Counter(status_occurances)["Additional Info Required"]]
+    return render_template("home.html", user=current_user, priority_labels=priority_labels, priority_values=priority_values, status_labels=status_labels, status_values=status_values)
 
 # projects routing #
 @views.route('/projects')
