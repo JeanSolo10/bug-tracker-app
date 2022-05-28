@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from .models import Project, User, Ticket, Comment
 from . import db
 from collections import Counter
+from flask_sqlalchemy import Pagination
 
 views = Blueprint('views', __name__)
 
@@ -58,20 +59,45 @@ def new_project():
     users = load_all_users()
     return render_template("new_project.html", user=current_user, userList=users)    
 
-@views.route('/projects/<id>/details/<int:page_num>', methods=['GET', 'POST'])
+@views.route('/projects/<id>/details/members/<int:m_page_num>/tickets/<int:t_page_num>', methods=['GET', 'POST'])
 @login_required
-def project_details(id, page_num):
+def project_details(id, t_page_num, m_page_num):
     project = Project.query.filter_by(id=id).first()
+    tickets = Ticket.query.filter_by(project_reference=id).order_by(Ticket.date.desc()).paginate(per_page=6, page=t_page_num, error_out=True)
     members = project.members
-    tickets = Ticket.query.filter_by(project_reference=id).order_by(Ticket.date.desc()).paginate(per_page=6, page=page_num, error_out=True)
     
+    members_per_page = 6
+    start = (m_page_num - 1) * members_per_page
+    end = start + members_per_page
+    items = members[start:end]
+    membersPagination = Pagination(None, m_page_num, members_per_page, len(members), items)
+
+    # members pagination
+    members_has_next_page = membersPagination.has_next
+    members_has_prev_page = membersPagination.has_prev
+    members_next_page = membersPagination.next_num
+    members_prev_page = membersPagination.prev_num
+
+    # tickets pagination
     has_next_page = tickets.has_next
     has_prev_page = tickets.has_prev
-
     next_page = tickets.next_num
     prev_page = tickets.prev_num
     
-    return render_template("project_details.html", user=current_user, project=project, members=members, tickets=tickets, has_next_page=has_next_page, has_prev_page=has_prev_page, next_page=next_page, prev_page=prev_page)
+    return render_template("project_details.html", 
+                            user=current_user, 
+                            project=project, 
+                            members=membersPagination, 
+                            tickets=tickets, 
+                            has_next_page=has_next_page, 
+                            has_prev_page=has_prev_page, 
+                            next_page=next_page, 
+                            prev_page=prev_page,
+                            members_has_next_page=members_has_next_page, 
+                            members_has_prev_page=members_has_prev_page, 
+                            members_next_page=members_next_page, 
+                            members_prev_page=members_prev_page
+                            )
 
 def load_all_users():
     return User.query.all()
