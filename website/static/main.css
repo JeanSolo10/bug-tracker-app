@@ -1,5 +1,6 @@
 body {
-  background-color: #fbfbfb;
+  background-color: #e7e9eb;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 @media (min-width: 991.98px) {
   .logged-in-main {
@@ -36,4 +37,10 @@ body {
   padding-top: 0.5rem;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+/* Ticket Card  */
+.column-title,
+.comment-author {
+  font-weight: bold;
 }

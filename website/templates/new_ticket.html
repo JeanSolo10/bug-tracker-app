@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block title %} Project {% endblock %} {% block main
+%}
+<main style="margin-top: 58px" class="logged-in-main">
+  <div class="container pt-4">
+    {% block content %}
+    <form method="POST">
+      <h3 align="center">Ticket Details</h3>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          placeholder="Enter name"
+        />
+      </div>
+      <div class="form-group">
+        <label>Assigned Developer</label>
+        <select
+          name="developer"
+          class="form-select"
+          aria-label="Developer selection"
+        >
+          <option selected>Select Developer</option>
+          {% for members in project_members%}
+          <option value="{{members.id}}">
+            {{members.first_name}} {{members.last_name}}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select name="type" class="form-select" aria-label="Type selection">
+          <option value="Bug" selected>Bug</option>
+          <option value="Enhancement">Enhancement</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Priority</label>
+        <select
+          name="priority"
+          class="form-select"
+          aria-label="Priority selection"
+        >
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Status</label>
+        <select
+          name="status"
+          class="form-select"
+          aria-label="Default select example"
+        >
+          <option value="New" selected>New</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Additional Info Required">
+            Additional Info Required
+          </option>
+          <option value="Resolved">Resolved</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          name="description"
+          class="form-control"
+          id="description"
+          rows="3"
+        ></textarea>
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary">Create Ticket</button>
+    </form>
+    {% endblock %}
+  </div>
+</main>
+{% endblock%}

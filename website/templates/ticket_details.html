@@ -1,74 +1,114 @@
-{% extends "base.html" %} 
-{% block title %} Project Details {% endblock %} 
-
-{% block main %}
-    <main style="margin-top: 58px" class="logged-in-main">
-      <div class="container pt-2">
-        {% block content %}
-        <div class="container">
-            <div class="title">
-                {% for project in projects %}
-                    <h1>{{project.name}}</h1>
-                {% endfor %}
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Members</h5>
-                      <div class="table-wrapper">
-                        <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Name</th>
-                              <th scope="col">Email</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                              {% for member in members %}
-                            <tr>
-                                    <td>{{member.first_name}} {{member.last_name}}</td>
-                                    <td>{{member.email}}</td>
-                                </tr>
-                                {% endfor %}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+{% extends "base.html" %} {% block title %} Ticket Details {% endblock %} {%
+block main %}
+<main style="margin-top: 58px" class="logged-in-main">
+  {% block content %}
+  <div class="container-fluid pt-4">
+    <div class="d-flex justify-content-between">
+      <div class="title">
+        <h1>Ticket Details</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="ticket-wrapper col-6">
+        <div class="card">
+          <div class="container-fluid">
+            <div class="row .bg-white px-2">
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Title</div>
+                <div class="column-content">{{ticket.name}}</div>
+              </div>
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Created On</div>
+                <div class="column-content">{{ticket.date}}</div>
+              </div>
+              <span class="border-bottom"></span>
+              <div class="w-100"></div>
+              <!-- Next line -->
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">
+                  Assigned Developer
                 </div>
-                <div class="col-sm-8">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Tickets</h5>
-                      <div class="table-wrapper">
-                        <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Title</th>
-                              <th scope="col">Submitter</th>
-                              <th scope="col">Status</th>
-                              <th scope="col">Created</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>Ticket Placholder Name</td>
-                              <td>Placeholder Author</td>
-                              <td>Status Placeholder</td>
-                              <td>Created On</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+                <div class="column-content">
+                  {{ticket.ticket_dev.first_name}}
+                  {{ticket.ticket_dev.last_name}}
                 </div>
               </div>
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Submitted By</div>
+                <div class="column-content">{{ticket.submitted_by}}</div>
+              </div>
+              <span class="border-bottom"></span>
+              <div class="w-100"></div>
+              <!-- Next line -->
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Project</div>
+                <div class="column-content">{{ticket.ticket_project.name}}</div>
+              </div>
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Status</div>
+                <div class="column-content">{{ticket.status}}</div>
+              </div>
+              <span class="border-bottom"></span>
+              <div class="w-100"></div>
+              <!-- Next line -->
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Priority</div>
+                <div class="column-content">{{ticket.priority}}</div>
+              </div>
+              <div class="col-6 py-2">
+                <div class="column-header mb-1 column-title">Type</div>
+                <div class="column-content">{{ticket.type}}</div>
+              </div>
+              <span class="border-bottom"></span>
+              <div class="w-100"></div>
+              <!-- Next line -->
+              <div class="col-12 py-2">
+                <div class="column-header mb-1 column-title">Description</div>
+                <div class="column-content">{{ticket.description}}</div>
+              </div>
+              <span class="border-bottom"></span>
+              <div class="w-100"></div>
+              <!-- Next line -->
+            </div>
           </div>
         </div>
-        {% endblock %}
       </div>
-    </main>
+    </div>
+    <div class="comment-wrapper col-12 my-4">
+      <div class="card">
+        <div class="comment-section-title py-2 px-2">
+          <h5 class="card-title">Comments</h5>
+        </div>
+        {% for comment in comments %}
+        <div class="card mx-2 py-2 px-2 mb-2">
+          <div class="comment-details d-flex gap-2 mb-2">
+            <div class="comment-author">
+              {{comment.user_comments.first_name}}
+              {{comment.user_comments.last_name}}
+            </div>
+            <div class="comment-date">{{comment.date}}</div>
+          </div>
+          <div class="comment">{{comment.comment}}</div>
+        </div>
+        {% endfor %}
+        <div class="row">
+          <form method="POST">
+            <div class="d-flex gap-3 py-2 px-2">
+              <textarea
+                name="comment"
+                id="comment"
+                class="form-control"
+                rows="2"
+              ></textarea>
+              <div class="comment-btn my-auto">
+                <button type="submit" class="btn btn-primary">Comment</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</main>
 {% endblock%}
-    
