@@ -1,10 +1,123 @@
-{% extends "base.html" %} {% block title %} Dashboard {% endblock %} {% block
-main %}
+{% extends "base.html" %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block title %} Dashboard {% endblock %} {% block main %}
 <main style="margin-top: 58px" class="logged-in-main">
   <div class="container-fluid pt-4">
     {% block content %}
-    <h1 align="center">Dashboard</h1>
+    <div class="mb-4">
+      <h1 align="center">Dashboard</h1>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-5 card">
+        <div class="chart-title mb-2 text-center">Tickets By Priority</div>
+        <div class="chart">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+      <div class="col-1"></div>
+      <div class="col-5 card">
+        <div class="chart-title mb-2 text-center">Tickets By Status</div>
+        <div class="chart">
+          <canvas id="myChart2"></canvas>
+        </div>
+      </div>
+    </div>
     {% endblock %}
   </div>
 </main>
+<script>
+  const data = {
+    labels: {{ priority_labels | safe }},
+    datasets: [
+      {
+        label: "Tickets By Priority",
+        data: {{ priority_values | safe }},
+        backgroundColor: [
+          "rgb(255, 255, 102)",
+          "rgb(255, 153, 51)",
+          "rgb(255, 0, 0, 1)",
+
+        ],
+        borderColor: [
+          "rgb(255, 255, 102)",
+          "rgb(255, 153, 51)",
+          "rgb(255, 0, 0)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const config = {
+    type: "bar",
+    data: data,
+    options: {
+      scales: {
+        y: {
+          ticks: {
+            stepSize: 1,
+            beginAtZero: true,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+            display: false
+        },
+    },
+    },
+  };
+</script>
+<script>
+  const myChart = new Chart(document.getElementById("myChart"), config);
+</script>
+
+<!-- Second chart -->
+<script>
+  const data2 = {
+    labels: {{ status_labels | safe }},
+    datasets: [
+      {
+        label: "Tickets By Status",
+        data: {{ status_values | safe }},
+        backgroundColor: [
+          "rgb(0, 230, 255)",
+          "rgb(0, 255, 0)",
+          "rgb(0,0,128)",
+
+        ],
+        borderColor: [
+          "rgb(51, 255, 255)",
+          "rgb(0, 255, 0)",
+          "rgb(0,0,128)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const config2 = {
+    type: "bar",
+    data: data2,
+    options: {
+      scales: {
+        y: {
+          ticks: {
+            stepSize: 1,
+            beginAtZero: true,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+            display: false
+        },
+    },
+    },
+  };
+</script>
+<script>
+  const myChart2 = new Chart(document.getElementById("myChart2"), config2);
+</script>
+
 {% endblock%}
