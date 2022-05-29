@@ -21,10 +21,25 @@ def home():
     return render_template("home.html", user=current_user, priority_labels=priority_labels, priority_values=priority_values, status_labels=status_labels, status_values=status_values)
 
 # projects routing #
-@views.route('/projects')
+@views.route('/projects/page/<int:page_num>')
 @login_required
-def projects():
-    return render_template("projects.html", user=current_user)
+def projects(page_num):
+    projects = Project.query.filter_by(owner_id=current_user.id).order_by(Project.date.desc()).paginate(per_page=10, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = projects.has_next
+    has_prev_page = projects.has_prev
+    next_page = projects.next_num
+    prev_page = projects.prev_num
+    print(f'user projects', current_user.projects)
+    print(f'Queried projects', projects.pages)
+    return render_template("projects.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            projects=projects
+                            )
 
 @views.route('/projects/new', methods=['GET', 'POST'])
 @login_required
@@ -53,7 +68,7 @@ def new_project():
                     new_project.members.append(member)
             db.session.commit()
             flash('Project created!', category='success')
-            return redirect(url_for('views.projects'))
+            return redirect(url_for('views.projects', page_num=1))
 
     # handle GET request
     users = load_all_users()
