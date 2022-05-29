@@ -65,6 +65,7 @@ def new_project():
         members = request.form.getlist('members')
 
         print(f'description: {description}')
+        print(f'members: {members}')
 
         if name:
             currForm.name = name
@@ -75,6 +76,8 @@ def new_project():
             flash('Enter name', category='error')
         elif not description:
             flash('Enter description', category='error')
+        elif len(members) < 1:
+            flash('You must select at least 1 member', category='error')
         elif len(name) < 2:
             flash('Project Name must be greater than 1 character', category='error')
         elif len(description) < 4:
