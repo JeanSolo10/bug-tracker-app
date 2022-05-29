@@ -13,6 +13,9 @@
           id="name"
           name="name"
           placeholder="Enter name"
+          {% if form.name%}
+          value="{{form.name}}"
+          {% endif %}
         />
       </div>
       <div class="form-group">
@@ -23,6 +26,9 @@
           id="description"
           name="description"
           placeholder="Enter description"
+          {% if form.description%}
+          value="{{form.description}}"
+          {% endif %}
         />
       </div>
       <div class="form-group">

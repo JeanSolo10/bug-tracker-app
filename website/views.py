@@ -2,10 +2,12 @@ from distutils.log import error
 from nis import cat
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
+from sqlalchemy import desc
 from .models import Project, User, Ticket, Comment
 from . import db
 from collections import Counter
 from flask_sqlalchemy import Pagination
+import types
 
 views = Blueprint('views', __name__)
 
@@ -54,16 +56,25 @@ def projects(page_num):
 @views.route('/projects/new', methods=['GET', 'POST'])
 @login_required
 def new_project():
+    currForm = types.SimpleNamespace()
+
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
         owner_id = current_user.id
         members = request.form.getlist('members')
+        
+        if name:
+            currForm.name = name
+        if description:
+            currForm.description = description
 
         if not name:
             flash('Enter name', category='error')
         elif not description:
             flash('Enter description', category='error')
+        elif len(members) < 1:
+            flash('You must select at least 1 member', category='error')
         elif len(name) < 2:
             flash('Project Name must be greater than 1 character', category='error')
         elif len(description) < 4:
@@ -82,7 +93,7 @@ def new_project():
 
     # handle GET request
     users = load_all_users()
-    return render_template("new_project.html", user=current_user, userList=users)    
+    return render_template("new_project.html", user=current_user, userList=users, form=currForm)    
 
 @views.route('/projects/<id>/details/members/<int:m_page_num>/tickets/<int:t_page_num>', methods=['GET', 'POST'])
 @login_required
@@ -171,6 +182,7 @@ def ticket_details(id, ticket_id):
 @views.route('/project/<id>/ticket/new/', methods=['GET', 'POST'])
 @login_required
 def new_ticket(id):
+    currForm = types.SimpleNamespace()
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
@@ -181,14 +193,23 @@ def new_ticket(id):
         submitted_by = current_user.first_name + " " + current_user.last_name
         project_reference = id
 
+        if name:
+            currForm.name = name
+        if description:
+            currForm.description = description
+        if assigned_to:
+            currForm.assigned_to = assigned_to
+
         if not name:
             flash('Enter name', category='error')
+        elif len(name) < 2:
+            flash('Ticket Name must be greater than 1 character', category='error')
+        elif assigned_to == 'Select Developer':
+            flash('You must select a developer for this ticket', category='error')
         elif not description:
             flash('Enter description', category='error')
-        elif len(name) < 2:
-            flash('Project Name must be greater than 1 character', category='error')
         elif len(description) < 4:
-            flash('Project Description must be greater than 3 character', category='error')
+            flash('Ticket Description must be greater than 3 character', category='error')
         else:
             new_ticket = Ticket(name=name, description=description, type=type, priority=priority, status=status, submitted_by=submitted_by, project_reference=project_reference, assigned_to=assigned_to)
             db.session.add(new_ticket)
@@ -199,4 +220,4 @@ def new_ticket(id):
     
     project = Project.query.filter_by(id=id).first()
     
-    return render_template("new_ticket.html", user=current_user, project_members=project.members) 
+    return render_template("new_ticket.html", user=current_user, project_members=project.members, form=currForm) 
