@@ -14,7 +14,7 @@ Login {% endblock %} {% block main %}
           name="email"
           placeholder="Enter email"
           {% if form.email %}
-          value={{form.email}}
+          value="{{form.email}}"
           {% endif%}
         />
       </div>
@@ -27,7 +27,7 @@ Login {% endblock %} {% block main %}
           name="firstName"
           placeholder="Enter first name"
           {% if form.first_name %}
-          value={{form.first_name}}
+          value="{{form.first_name}}"
           {% endif%}
         />
       </div>
@@ -40,7 +40,7 @@ Login {% endblock %} {% block main %}
           name="lastName"
           placeholder="Enter last name"
           {% if form.last_name %}
-          value={{form.last_name}}
+          value="{{form.last_name}}"
           {% endif%}
         />
       </div>
