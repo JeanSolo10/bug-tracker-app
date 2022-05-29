@@ -24,21 +24,31 @@ def home():
 @views.route('/projects/page/<int:page_num>')
 @login_required
 def projects(page_num):
-    projects = Project.query.filter_by(owner_id=current_user.id).order_by(Project.date.desc()).paginate(per_page=10, page=page_num, error_out=True)
+    
+    projectsData = current_user.projects
+    # sort by date dec
+    projectsData.reverse()
+
+    # projects pagination
+    projects_per_page = 10
+    start = (page_num - 1) * projects_per_page
+    end = start + projects_per_page
+    items = projectsData[start:end]
+    projectsPagination = Pagination(None, page_num, projects_per_page, len(projectsData), items)
+
     # tickets pagination
-    has_next_page = projects.has_next
-    has_prev_page = projects.has_prev
-    next_page = projects.next_num
-    prev_page = projects.prev_num
-    print(f'user projects', current_user.projects)
-    print(f'Queried projects', projects.pages)
+    has_next_page = projectsPagination.has_next
+    has_prev_page = projectsPagination.has_prev
+    next_page = projectsPagination.next_num
+    prev_page = projectsPagination.prev_num
+
     return render_template("projects.html", 
                             user=current_user,
                             has_next_page=has_next_page,
                             has_prev_page=has_prev_page,
                             next_page=next_page,
                             prev_page=prev_page,
-                            projects=projects
+                            projects=projectsPagination
                             )
 
 @views.route('/projects/new', methods=['GET', 'POST'])
