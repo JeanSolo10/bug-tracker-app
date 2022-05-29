@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %} Project {% endblock %} {% block main
+{% extends "base.html" %} {% block title %} Ticket {% endblock %} {% block main
 %}
 <main style="margin-top: 58px" class="logged-in-main">
   <div class="container pt-4">
@@ -13,6 +13,9 @@
           id="name"
           name="name"
           placeholder="Enter name"
+          {% if form.name %}
+          value="{{form.name}}"
+          {% endif %}
         />
       </div>
       <div class="form-group">
@@ -24,8 +27,8 @@
         >
           <option selected>Select Developer</option>
           {% for members in project_members%}
-          <option value="{{members.id}}">
-            {{members.first_name}} {{members.last_name}}
+            <option value="{{members.id}}">
+          {{members.first_name}} {{members.last_name}}
           </option>
           {% endfor %}
         </select>
@@ -71,7 +74,7 @@
           class="form-control"
           id="description"
           rows="3"
-        ></textarea>
+        >{% if form.description %}{{form.description}}{% endif %}</textarea>
       </div>
       <br />
       <button type="submit" class="btn btn-primary">Create Ticket</button>
