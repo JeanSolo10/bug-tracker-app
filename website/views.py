@@ -1,9 +1,11 @@
+from distutils.log import error
 from nis import cat
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .models import Project, User, Ticket, Comment
 from . import db
 from collections import Counter
+from flask_sqlalchemy import Pagination
 
 views = Blueprint('views', __name__)
 
@@ -19,10 +21,25 @@ def home():
     return render_template("home.html", user=current_user, priority_labels=priority_labels, priority_values=priority_values, status_labels=status_labels, status_values=status_values)
 
 # projects routing #
-@views.route('/projects')
+@views.route('/projects/page/<int:page_num>')
 @login_required
-def projects():
-    return render_template("projects.html", user=current_user)
+def projects(page_num):
+    projects = Project.query.filter_by(owner_id=current_user.id).order_by(Project.date.desc()).paginate(per_page=10, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = projects.has_next
+    has_prev_page = projects.has_prev
+    next_page = projects.next_num
+    prev_page = projects.prev_num
+    print(f'user projects', current_user.projects)
+    print(f'Queried projects', projects.pages)
+    return render_template("projects.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            projects=projects
+                            )
 
 @views.route('/projects/new', methods=['GET', 'POST'])
 @login_required
@@ -51,20 +68,51 @@ def new_project():
                     new_project.members.append(member)
             db.session.commit()
             flash('Project created!', category='success')
-            return redirect(url_for('views.projects'))
+            return redirect(url_for('views.projects', page_num=1))
 
     # handle GET request
     users = load_all_users()
     return render_template("new_project.html", user=current_user, userList=users)    
 
-@views.route('/projects/<id>/details', methods=['GET', 'POST'])
+@views.route('/projects/<id>/details/members/<int:m_page_num>/tickets/<int:t_page_num>', methods=['GET', 'POST'])
 @login_required
-def project_details(id):
+def project_details(id, t_page_num, m_page_num):
     project = Project.query.filter_by(id=id).first()
+    tickets = Ticket.query.filter_by(project_reference=id).order_by(Ticket.date.desc()).paginate(per_page=6, page=t_page_num, error_out=True)
     members = project.members
-    tickets = Ticket.query.filter_by(project_reference=id)
+    
+    members_per_page = 6
+    start = (m_page_num - 1) * members_per_page
+    end = start + members_per_page
+    items = members[start:end]
+    membersPagination = Pagination(None, m_page_num, members_per_page, len(members), items)
 
-    return render_template("project_details.html", user=current_user, project=project, members=members, tickets=tickets)
+    # members pagination
+    members_has_next_page = membersPagination.has_next
+    members_has_prev_page = membersPagination.has_prev
+    members_next_page = membersPagination.next_num
+    members_prev_page = membersPagination.prev_num
+
+    # tickets pagination
+    has_next_page = tickets.has_next
+    has_prev_page = tickets.has_prev
+    next_page = tickets.next_num
+    prev_page = tickets.prev_num
+    
+    return render_template("project_details.html", 
+                            user=current_user, 
+                            project=project, 
+                            members=membersPagination, 
+                            tickets=tickets, 
+                            has_next_page=has_next_page, 
+                            has_prev_page=has_prev_page, 
+                            next_page=next_page, 
+                            prev_page=prev_page,
+                            members_has_next_page=members_has_next_page, 
+                            members_has_prev_page=members_has_prev_page, 
+                            members_next_page=members_next_page, 
+                            members_prev_page=members_prev_page
+                            )
 
 def load_all_users():
     return User.query.all()
@@ -72,10 +120,23 @@ def load_all_users():
 # projects routing #
 
 # tickets routing #
-@views.route('/tickets')
+@views.route('/tickets/page/<int:page_num>')
 @login_required
-def tickets():
-    return render_template("tickets.html", user=current_user)
+def tickets(page_num):
+    tickets = Ticket.query.filter_by(assigned_to=current_user.id).order_by(Ticket.date.desc()).paginate(per_page=10, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = tickets.has_next
+    has_prev_page = tickets.has_prev
+    next_page = tickets.next_num
+    prev_page = tickets.prev_num
+    return render_template("tickets.html",
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            tickets=tickets
+                            )
 
 @views.route('/project/<id>/ticket/<ticket_id>', methods=['GET', 'POST'])
 @login_required
@@ -123,7 +184,7 @@ def new_ticket(id):
             db.session.add(new_ticket)
             db.session.commit()
             flash('Ticket created!', category='success')
-            return redirect(url_for('views.project_details', id=id))
+            return redirect(url_for('views.project_details', id=id, m_page_num=1, t_page_num=1))
 
     
     project = Project.query.filter_by(id=id).first()
