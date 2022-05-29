@@ -13,6 +13,9 @@ Login {% endblock %} {% block main %}
           id="email"
           name="email"
           placeholder="Enter email"
+          {% if form.email %}
+          value={{form.email}}
+          {% endif%}
         />
       </div>
       <div class="form-group">
