@@ -120,10 +120,23 @@ def load_all_users():
 # projects routing #
 
 # tickets routing #
-@views.route('/tickets')
+@views.route('/tickets/page/<int:page_num>')
 @login_required
-def tickets():
-    return render_template("tickets.html", user=current_user)
+def tickets(page_num):
+    tickets = Ticket.query.filter_by(assigned_to=current_user.id).order_by(Ticket.date.desc()).paginate(per_page=10, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = tickets.has_next
+    has_prev_page = tickets.has_prev
+    next_page = tickets.next_num
+    prev_page = tickets.prev_num
+    return render_template("tickets.html",
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            tickets=tickets
+                            )
 
 @views.route('/project/<id>/ticket/<ticket_id>', methods=['GET', 'POST'])
 @login_required
@@ -171,7 +184,7 @@ def new_ticket(id):
             db.session.add(new_ticket)
             db.session.commit()
             flash('Ticket created!', category='success')
-            return redirect(url_for('views.project_details', id=id, page_num=1))
+            return redirect(url_for('views.project_details', id=id, m_page_num=1, t_page_num=1))
 
     
     project = Project.query.filter_by(id=id).first()
