@@ -2,10 +2,12 @@ from distutils.log import error
 from nis import cat
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
+from sqlalchemy import desc
 from .models import Project, User, Ticket, Comment
 from . import db
 from collections import Counter
 from flask_sqlalchemy import Pagination
+import types
 
 views = Blueprint('views', __name__)
 
@@ -54,11 +56,20 @@ def projects(page_num):
 @views.route('/projects/new', methods=['GET', 'POST'])
 @login_required
 def new_project():
+    currForm = types.SimpleNamespace()
+
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
         owner_id = current_user.id
         members = request.form.getlist('members')
+
+        print(f'description: {description}')
+
+        if name:
+            currForm.name = name
+        if description:
+            currForm.description = description
 
         if not name:
             flash('Enter name', category='error')
@@ -82,7 +93,7 @@ def new_project():
 
     # handle GET request
     users = load_all_users()
-    return render_template("new_project.html", user=current_user, userList=users)    
+    return render_template("new_project.html", user=current_user, userList=users, form=currForm)    
 
 @views.route('/projects/<id>/details/members/<int:m_page_num>/tickets/<int:t_page_num>', methods=['GET', 'POST'])
 @login_required
