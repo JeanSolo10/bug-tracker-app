@@ -44,3 +44,22 @@ body {
 .comment-author {
   font-weight: bold;
 }
+
+/* My Ticket priority */
+.ticket-priority-low {
+  background-color: rgb(255, 255, 102) !important;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ticket-priority-medium {
+  background-color: rgb(255, 153, 51) !important;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ticket-priority-high {
+  background-color: rgb(255, 0, 0) !important;
+  font-weight: 700;
+  text-align: center;
+}

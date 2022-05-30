@@ -28,7 +28,13 @@
             <td>{{ticket.name}}</td>
             <td>{{ticket.ticket_project.name}}</td>
             <td>{{ticket.status}}</td>
-            <td>{{ticket.priority}}</td>
+            {% if ticket.priority == "Low"%}
+              <td class="ticket-priority-low">{{ticket.priority}}</td>
+            {% elif ticket.priority == "Medium" %}
+              <td class="ticket-priority-medium">{{ticket.priority}}</td>
+            {% else %}
+              <td class="ticket-priority-high">{{ticket.priority}}</td>
+            {% endif %}
             <td>{{ticket.type}}</td>
             <td>{{ticket.date}}</td>
             <td>
