@@ -7,16 +7,21 @@
     <div class="mb-4">
       <h1 align="center">Dashboard</h1>
     </div>
-    <div class="row justify-content-center">
-      <div class="col-5 card">
-        <div class="chart-title mb-2 text-center">Tickets By Priority</div>
+    <div class="row justify-content-center dashboard-chart mb-4">
+      <div class="col-12 card">
+        <div class="chart-title mb-2 text-center pt-2 fw-bold">
+          Tickets By Priority
+        </div>
         <div class="chart">
           <canvas id="myChart"></canvas>
         </div>
       </div>
-      <div class="col-1"></div>
-      <div class="col-5 card">
-        <div class="chart-title mb-2 text-center">Tickets By Status</div>
+    </div>
+    <div class="row justify-content-center dashboard-chart">
+      <div class="col-12 card">
+        <div class="chart-title mb-2 text-center pt-2 fw-bold">
+          Tickets By Status
+        </div>
         <div class="chart">
           <canvas id="myChart2"></canvas>
         </div>
@@ -57,12 +62,23 @@
           ticks: {
             stepSize: 1,
             beginAtZero: true,
+            font: {
+              size: 14,
+            }
           },
         },
+        x: {
+          ticks: {
+              font: {
+                  size: 15,
+                  weight: 500,
+              }
+            }
+        }
       },
       plugins: {
         legend: {
-            display: false
+            display: false,
         },
     },
     },
@@ -105,8 +121,19 @@
           ticks: {
             stepSize: 1,
             beginAtZero: true,
+            font: {
+              size: 14,
+            }
           },
         },
+        x: {
+          ticks: {
+              font: {
+                  size: 15,
+                  weight: 500,
+              }
+            }
+        }
       },
       plugins: {
         legend: {
