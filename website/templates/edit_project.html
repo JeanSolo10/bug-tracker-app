@@ -1,0 +1,76 @@
+{% extends "base.html" %} {% block title %} Project {% endblock %} {% block main
+%}
+<main style="margin-top: 58px" class="logged-in-main">
+  <div class="container pt-4">
+    {% block content %}
+    <form method="POST">
+      <h3 align="center">Edit Project</h3>
+      <div class="form-group">
+        <label for="name">Project Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          placeholder="Enter name"
+          {% if project_info.name %}
+          value="{{project_info.name}}"
+          {% endif %}
+        />
+      </div>
+      <div class="form-group">
+        <label for="description">Project Description</label>
+        <input
+          type="text"
+          class="form-control"
+          id="description"
+          name="description"
+          placeholder="Enter description"
+          {% if project_info.description %}
+          value="{{project_info.description}}"
+          {% endif %}
+        />
+      </div>
+      <div class="form-group">
+        <label for="name">Owner_id</label>
+        <input
+          type="number"
+          class="form-control"
+          id="owner_id"
+          name="owner_id"
+          placeholder="owner_id"
+          {% if project_info.owner_id %}
+          value="{{project_info.owner_id}}"
+          {% endif %}
+        />
+      </div>
+      <div class="form-group">
+        <label>Members:</label>
+        <select
+          name="members"
+          class="form-select"
+          multiple
+          aria-label="multiple select example"
+        >
+        {% for member in project_info.members %}
+          <option value="{{member.id}}" selected>
+            {{member.first_name}} {{member.last_name}}
+          </option>
+          {% endfor %}
+          {% for user in users %}
+          <option value="{{user.id}}" >
+            {{user.first_name}} {{user.last_name}}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <br />
+      <div class="d-flex gap-4">
+          <button type="submit" class="btn btn-primary">Update Project</button>
+          <a class="my-auto" href="javascript:history.back();">Cancel</a>
+        </div>
+    </form>
+    {% endblock %}
+  </div>
+</main>
+{% endblock%}

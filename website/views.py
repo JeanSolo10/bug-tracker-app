@@ -95,6 +95,51 @@ def new_project():
     users = load_all_users()
     return render_template("new_project.html", user=current_user, userList=users, form=currForm)    
 
+@views.route('/projects/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_project(id):
+    project_info = types.SimpleNamespace()
+    project = Project.query.get_or_404(id)
+
+    project_info.name = project.name
+    project_info.description = project.description
+    project_info.owner_id = project.owner_id
+    project_info.members = project.members
+    users = list(set(project.members) ^ set(load_all_users()))
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        owner_id = request.form.get('owner_id')
+        members = request.form.getlist('members')
+
+        if not name:
+            flash('Enter name', category='error')
+        elif not description:
+            flash('Enter description', category='error')
+        elif len(members) < 1:
+            flash('You must select at least 1 member', category='error')
+        elif len(name) < 2:
+            flash('Project Name must be greater than 1 character', category='error')
+        elif len(description) < 4:
+            flash('Project Description must be greater than 3 character', category='error')
+        else:
+            project.name = name
+            project.description = description
+            project.owner_id = owner_id
+            list_members = []
+            for id in members:
+                member = User.query.filter_by(id=id).first()
+                list_members.append(member)
+            project.members = list_members
+            db.session.add(project)
+            db.session.commit()
+            flash('Project updated!', category='success')
+            return redirect(url_for('views.project_details', id=project.id, m_page_num=1, t_page_num=1))
+
+
+    return render_template("edit_project.html", user=current_user, project_info=project_info, users=users)
+
 @views.route('/projects/<id>/details/members/<int:m_page_num>/tickets/<int:t_page_num>', methods=['GET', 'POST'])
 @login_required
 def project_details(id, t_page_num, m_page_num):
@@ -221,3 +266,62 @@ def new_ticket(id):
     project = Project.query.filter_by(id=id).first()
     
     return render_template("new_ticket.html", user=current_user, project_members=project.members, form=currForm) 
+
+@views.route('/tickets/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_ticket(id):
+    ticket_info = types.SimpleNamespace()
+    ticket = Ticket.query.get_or_404(id)
+
+    ticket_info.name = ticket.name
+    ticket_info.description = ticket.description
+    ticket_info.status = ticket.status
+    ticket_info.type = ticket.type
+    ticket_info.priority = ticket.priority
+    ticket_info.assigned_to = ticket.assigned_to
+    #users = list(set(ticket.members) ^ set(load_all_users()))
+
+    project = Project.query.filter_by(id=ticket.project_reference).first()
+    available_types = ["Bug", "Enhancement"]
+    available_priorities = ["Low", "Medium", "High"]
+    available_status = ["New", "In Progress", "Additional Info Required", "Resolved"]
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        assigned_to = request.form.getlist('developer')[0]
+        type = request.form.getlist('type')[0]
+        priority = request.form.getlist('priority')[0]
+        status = request.form.getlist('status')[0]
+
+        if not name:
+            flash('Enter name', category='error')
+        elif len(name) < 2:
+            flash('Ticket Name must be greater than 1 character', category='error')
+        elif assigned_to == 'Select Developer':
+            flash('You must select a developer for this ticket', category='error')
+        elif not description:
+            flash('Enter description', category='error')
+        elif len(description) < 4:
+            flash('Ticket Description must be greater than 3 character', category='error')
+        else:
+            ticket.name = name
+            ticket.description = description
+            ticket.assigned_to = assigned_to
+            ticket.type = type
+            ticket.priority = priority
+            ticket.status = status
+            
+            db.session.add(ticket)
+            db.session.commit()
+            flash('Ticket updated!', category='success')
+            return redirect(url_for('views.ticket_details', id=project.id, ticket_id=ticket.id))
+
+
+    return render_template("edit_ticket.html", 
+                            user=current_user, 
+                            ticket_info=ticket_info, 
+                            project_members=project.members,
+                            available_types=available_types,
+                            available_priorities=available_priorities,
+                            available_status=available_status) 
