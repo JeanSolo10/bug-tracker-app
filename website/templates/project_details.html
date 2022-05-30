@@ -4,10 +4,14 @@
   {% block content %}
   <div class="container-fluid pt-4">
     <div class="d-flex justify-content-between">
-      <div class="title">
+      <div class="title d-flex gap-4">
         <h1>{{project.name}}</h1>
+        <a class="align-self-center" href="/projects/edit/{{project.id}}"
+                ><i class="fas fa-edit fa-lg">Edit</i>
+                </a
+              >
       </div>
-      <div class="add-project-btn my-auto">
+      <div class="add-project-btn my-auto d-flex gap-5">
         <a href="/project/{{project.id}}/ticket/new/" class="btn btn-primary"
           >Add Ticket</a
         >
