@@ -266,3 +266,62 @@ def new_ticket(id):
     project = Project.query.filter_by(id=id).first()
     
     return render_template("new_ticket.html", user=current_user, project_members=project.members, form=currForm) 
+
+@views.route('/tickets/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_ticket(id):
+    ticket_info = types.SimpleNamespace()
+    ticket = Ticket.query.get_or_404(id)
+
+    ticket_info.name = ticket.name
+    ticket_info.description = ticket.description
+    ticket_info.status = ticket.status
+    ticket_info.type = ticket.type
+    ticket_info.priority = ticket.priority
+    ticket_info.assigned_to = ticket.assigned_to
+    #users = list(set(ticket.members) ^ set(load_all_users()))
+
+    project = Project.query.filter_by(id=ticket.project_reference).first()
+    available_types = ["Bug", "Enhancement"]
+    available_priorities = ["Low", "Medium", "High"]
+    available_status = ["New", "In Progress", "Additional Info Required", "Resolved"]
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        assigned_to = request.form.getlist('developer')[0]
+        type = request.form.getlist('type')[0]
+        priority = request.form.getlist('priority')[0]
+        status = request.form.getlist('status')[0]
+
+        if not name:
+            flash('Enter name', category='error')
+        elif len(name) < 2:
+            flash('Ticket Name must be greater than 1 character', category='error')
+        elif assigned_to == 'Select Developer':
+            flash('You must select a developer for this ticket', category='error')
+        elif not description:
+            flash('Enter description', category='error')
+        elif len(description) < 4:
+            flash('Ticket Description must be greater than 3 character', category='error')
+        else:
+            ticket.name = name
+            ticket.description = description
+            ticket.assigned_to = assigned_to
+            ticket.type = type
+            ticket.priority = priority
+            ticket.status = status
+            
+            db.session.add(ticket)
+            db.session.commit()
+            flash('Ticket updated!', category='success')
+            return redirect(url_for('views.ticket_details', id=project.id, ticket_id=ticket.id))
+
+
+    return render_template("edit_ticket.html", 
+                            user=current_user, 
+                            ticket_info=ticket_info, 
+                            project_members=project.members,
+                            available_types=available_types,
+                            available_priorities=available_priorities,
+                            available_status=available_status) 

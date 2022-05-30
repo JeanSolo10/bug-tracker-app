@@ -4,8 +4,11 @@ block main %}
   {% block content %}
   <div class="container-fluid pt-4">
     <div class="d-flex justify-content-between">
-      <div class="title">
+      <div class="title d-flex gap-4">
         <h1>Ticket Details</h1>
+        <a class="align-self-center" href="/tickets/edit/{{ticket.id}}"
+          ><i class="fas fa-edit fa-lg">Edit</i>
+        </a>
       </div>
     </div>
     <div class="row">
