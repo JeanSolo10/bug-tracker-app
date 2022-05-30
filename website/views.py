@@ -18,7 +18,7 @@ def home():
     priority_labels = ["Low", "Medium", "High"]
     priority_values = [Counter(priority_occurrences)["Low"], Counter(priority_occurrences)["Medium"], Counter(priority_occurrences)["High"]]
     status_occurances = [ticket.status for ticket in current_user.tickets]
-    status_labels = ["New", "In Progress", "Additional Info Required"]
+    status_labels = ["New", "In Progress", "Additional Info Req."]
     status_values = [Counter(status_occurances)["New"], Counter(status_occurances)["In Progress"], Counter(status_occurances)["Additional Info Required"]]
     return render_template("home.html", user=current_user, priority_labels=priority_labels, priority_values=priority_values, status_labels=status_labels, status_values=status_values)
 

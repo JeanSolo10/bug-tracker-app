@@ -63,3 +63,10 @@ body {
   font-weight: 700;
   text-align: center;
 }
+
+/* Dashboard */
+.dashboard-chart {
+  width: 45%;
+  margin-left: auto;
+  margin-right: auto;
+}
