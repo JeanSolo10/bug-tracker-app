@@ -69,8 +69,12 @@ def new_project():
         if description:
             currForm.description = description
 
+        project = Project.query.filter_by(name=name).first()
+
         if not name:
             flash('Enter name', category='error')
+        elif project:
+            flash('Name already exists!', category='error')
         elif not description:
             flash('Enter description', category='error')
         elif len(members) < 1:
