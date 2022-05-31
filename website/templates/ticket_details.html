@@ -1,14 +1,16 @@
 {% extends "base.html" %} {% block title %} Ticket Details {% endblock %} {%
 block main %}
-<main style="margin-top: 58px" class="logged-in-main">
+<main style="margin-top: 48px" class="logged-in-main">
   {% block content %}
   <div class="container-fluid pt-4">
-    <div class="d-flex justify-content-between">
-      <div class="title d-flex gap-4">
-        <h1>Ticket Details</h1>
-        <a class="align-self-center" href="/tickets/edit/{{ticket.id}}"
+    <div class="card px-3 py-3 mb-2">
+      <div class="row">  
+        <div class="col-12 title d-flex gap-4 align-self-center">
+          <h2 class="my-auto">Ticket Details</h2>
+          <a class="align-self-center" href="/tickets/edit/{{ticket.id}}"
           ><i class="fas fa-edit fa-lg">Edit</i>
-        </a>
+          </a>
+        </div>
       </div>
     </div>
     <div class="row">

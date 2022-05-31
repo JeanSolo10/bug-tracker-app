@@ -1,10 +1,16 @@
 {% extends "base.html" %} {% block title %} Ticket {% endblock %} {% block main
 %}
-<main style="margin-top: 58px" class="logged-in-main">
+<main style="margin-top: 48px" class="logged-in-main">
   <div class="container pt-4">
+    <div class="card px-3 py-3 mb-4">
+      <div class="row">
+        <div class="title col-12 align-self-center text-center">
+          <h2 class="my-auto">Ticket Details</h2>
+        </div>
+      </div>
+    </div>
     {% block content %}
     <form method="POST">
-      <h3 align="center">Ticket Details</h3>
       <div class="form-group">
         <label for="name">Name</label>
         <input
@@ -13,9 +19,14 @@
           id="name"
           name="name"
           placeholder="Enter name"
-          {% if form.name %}
+          {%
+          if
+          form.name
+          %}
           value="{{form.name}}"
-          {% endif %}
+          {%
+          endif
+          %}
         />
       </div>
       <div class="form-group">
@@ -27,8 +38,8 @@
         >
           <option selected>Select Developer</option>
           {% for members in project_members%}
-            <option value="{{members.id}}">
-          {{members.first_name}} {{members.last_name}}
+          <option value="{{members.id}}">
+            {{members.first_name}} {{members.last_name}}
           </option>
           {% endfor %}
         </select>
@@ -74,11 +85,16 @@
           class="form-control"
           id="description"
           rows="3"
-        >{% if form.description %}{{form.description}}{% endif %}</textarea>
+        >
+{% if form.description %}{{form.description}}{% endif %}</textarea
+        >
       </div>
       <br />
-      <button type="submit" class="btn btn-primary">Create Ticket</button>
-    </form>
+      <div class="d-flex gap-4">
+        <button type="submit" class="btn btn-primary">Create Ticket</button>
+        <a class="my-auto" href="javascript:history.back();">Cancel</a>
+      </div>
+      </form>
     {% endblock %}
   </div>
 </main>

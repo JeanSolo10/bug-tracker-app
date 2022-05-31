@@ -1,23 +1,25 @@
 {% extends "base.html" %} {% block title %} Project Details {% endblock %} {% block
   main %}
-<main style="margin-top: 58px" class="logged-in-main">
+<main style="margin-top: 48px" class="logged-in-main">
   {% block content %}
-  <div class="container-fluid pt-4">
-    <div class="d-flex justify-content-between">
-      <div class="title d-flex gap-4">
-        <h1>{{project.name}}</h1>
-        {% if project.owner_id == user.id %}
-          <a class="align-self-center" href="/projects/edit/{{project.id}}"
-                ><i class="fas fa-edit fa-lg">Edit</i>
-                </a
+    <div class="container-fluid pt-4">
+      <div class="card px-3 py-3 mb-2">
+        <div class="row">  
+            <div class="col-9 title d-flex gap-4 align-self-center">
+              <h2 class="my-auto">{{project.name}}</h2>
+              {% if project.owner_id == user.id %}
+                <a class="align-self-center" href="/projects/edit/{{project.id}}"
+                      ><i class="fas fa-edit fa-lg">Edit</i>
+                      </a
+                    >
+              {% endif %}
+            </div>
+            <div class="add-project-btn my-auto col-3 text-end">
+              <a href="/project/{{project.id}}/ticket/new/" class="btn btn-primary"
+                >Add Ticket</a
               >
-        {% endif %}
-      </div>
-      <div class="add-project-btn my-auto d-flex gap-5">
-        <a href="/project/{{project.id}}/ticket/new/" class="btn btn-primary"
-          >Add Ticket</a
-        >
-      </div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-4">
