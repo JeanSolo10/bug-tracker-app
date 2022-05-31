@@ -265,7 +265,6 @@ def new_ticket(id):
             db.session.commit()
             flash('Ticket created!', category='success')
             return redirect(url_for('views.project_details', id=id, m_page_num=1, t_page_num=1))
-
     
     project = Project.query.filter_by(id=id).first()
     

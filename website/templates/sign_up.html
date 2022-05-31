@@ -57,6 +57,42 @@ Login {% endblock %} {% block main %}
         />
       </div>
       <div class="form-group">
+        <label for="type">Role</label>
+        <select
+          name="role"
+          class="form-select"
+          aria-label="Default select example"
+        >
+          {% if form.role == "Select Role"%}
+          <option value="Select Role" selected>Select Role</option>
+          {% else %}
+          <option value="Select Role">Select Role</option>
+          {% endif %} {% if form.role == "Back End Developer"%}
+          <option value="Back End Developer" selected>
+            Back End Developer
+          </option>
+          {% else %}
+          <option value="Back End Developer">Back End Developer</option>
+          {% endif %} {% if form.role == "DevOps"%}
+          <option value="DevOps" selected>DevOps</option>
+          {% else %}
+          <option value="DevOps">DevOps</option>
+          {% endif %} {% if form.role == "Front End Developer"%}
+          <option value="Front End Developer" selected>
+            Front End Developer
+          </option>
+          {% else %}
+          <option value="Front End Developer">Front End Developer</option>
+          {% endif %} {% if form.role == "Full Stack Developer"%}
+          <option value="Full Stack Developer" selected>
+            Full Stack Developer
+          </option>
+          {% else %}
+          <option value="Full Stack Developer">Full Stack Developer</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="form-group">
         <label for="password1">Password</label>
         <input
           type="password"
