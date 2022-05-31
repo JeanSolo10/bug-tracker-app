@@ -1,100 +1,111 @@
 {% extends "base.html" %} {% block title %} Ticket {% endblock %} {% block main
-    %}
-    <main style="margin-top: 58px" class="logged-in-main">
-      <div class="container pt-4">
-        {% block content %}
-        <form method="POST">
-          <h3 align="center">Edit Ticket</h3>
-          <div class="form-group">
-            <label for="name">Ticket Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="name"
-              name="name"
-              placeholder="Enter name"
-              {% if ticket_info.name %}
-              value="{{ticket_info.name}}"
-              {% endif %}
-            />
-          </div>
-          <div class="form-group">
-            <label>Assigned Developer</label>
-            <select
-              name="developer"
-              class="form-select"
-              aria-label="Developer selection"
-            >
-              {% for member in project_members%}
-                {% if member.id == ticket_info.assigned_to %}
-                  <option value="{{member.id}}" selected>{{member.first_name}} {{member.last_name}}</option>
-                {% else %}
-                  <option value="{{member.id}}">{{member.first_name}} {{member.last_name}}</option>
-              {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="type">Type</label>
-            <select name="type" class="form-select" aria-label="Type selection">
-              {% for type in available_types %}
-                {% if type == ticket_info.type %}
-                  <option value="{{type}}" selected>{{type}}</option>
-                {% else %}
-                  <option value="{{type}}">{{type}}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="type">Priority</label>
-            <select
-              name="priority"
-              class="form-select"
-              aria-label="Priority selection"
-            >
-            {% for priority in available_priorities %}
-              {% if priority == ticket_info.priority %}
-                <option value="{{priority}}" selected>{{priority}}</option>
-              {% else %}
-                <option value="{{priority}}">{{priority}}</option>
-              {% endif %}
-            {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="type">Status</label>
-            <select
-              name="status"
-              class="form-select"
-              aria-label="Default select example"
-            >
-            {% for status in available_status %}
-              {% if status == ticket_info.status %}
-                <option value="{{status}}" selected>{{status}}</option>
-              {% else %}
-                <option value="{{status}}">{{status}}</option>
-              {% endif %}
-            {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea
-              name="description"
-              class="form-control"
-              id="description"
-              rows="3"
-            >{% if ticket_info.description %}{{ticket_info.description}}{% endif %}</textarea>
-          </div>
-          <br />
-          <div class="d-flex gap-4">
-              <button type="submit" class="btn btn-primary">Update Ticket</button>
-              <a class="my-auto" href="javascript:history.back();">Cancel</a>
-          </div>
-        </form>
-        {% endblock %}
+%}
+<main style="margin-top: 48px" class="logged-in-main">
+  <div class="container pt-4">
+    <div class="card px-3 py-3 mb-4">
+      <div class="row">
+        <div class="title col-12 align-self-center text-center">
+          <h2 class="my-auto">Edit Ticket</h2>
+        </div>
       </div>
-    </main>
-    {% endblock%}
-    
+    </div>
+    {% block content %}
+    <form method="POST">
+      <div class="form-group">
+        <label for="name">Ticket Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          placeholder="Enter name"
+          {%
+          if
+          ticket_info.name
+          %}
+          value="{{ticket_info.name}}"
+          {%
+          endif
+          %}
+        />
+      </div>
+      <div class="form-group">
+        <label>Assigned Developer</label>
+        <select
+          name="developer"
+          class="form-select"
+          aria-label="Developer selection"
+        >
+          {% for member in project_members%} {% if member.id ==
+          ticket_info.assigned_to %}
+          <option value="{{member.id}}" selected>
+            {{member.first_name}} {{member.last_name}}
+          </option>
+          {% else %}
+          <option value="{{member.id}}">
+            {{member.first_name}} {{member.last_name}}
+          </option>
+          {% endif %} {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select name="type" class="form-select" aria-label="Type selection">
+          {% for type in available_types %} {% if type == ticket_info.type %}
+          <option value="{{type}}" selected>{{type}}</option>
+          {% else %}
+          <option value="{{type}}">{{type}}</option>
+          {% endif %} {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Priority</label>
+        <select
+          name="priority"
+          class="form-select"
+          aria-label="Priority selection"
+        >
+          {% for priority in available_priorities %} {% if priority ==
+          ticket_info.priority %}
+          <option value="{{priority}}" selected>{{priority}}</option>
+          {% else %}
+          <option value="{{priority}}">{{priority}}</option>
+          {% endif %} {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Status</label>
+        <select
+          name="status"
+          class="form-select"
+          aria-label="Default select example"
+        >
+          {% for status in available_status %} {% if status ==
+          ticket_info.status %}
+          <option value="{{status}}" selected>{{status}}</option>
+          {% else %}
+          <option value="{{status}}">{{status}}</option>
+          {% endif %} {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          name="description"
+          class="form-control"
+          id="description"
+          rows="3"
+        >
+{% if ticket_info.description %}{{ticket_info.description}}{% endif %}</textarea
+        >
+      </div>
+      <br />
+      <div class="d-flex gap-4">
+        <button type="submit" class="btn btn-primary">Update Ticket</button>
+        <a class="my-auto" href="javascript:history.back();">Cancel</a>
+      </div>
+    </form>
+    {% endblock %}
+  </div>
+</main>
+{% endblock%}
