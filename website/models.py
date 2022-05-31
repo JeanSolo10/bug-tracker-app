@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     projects = db.relationship('Project', secondary=user_project, backref='members')
     tickets = db.relationship('Ticket', backref='ticket_dev')
     comments = db.relationship('Comment', backref='user_comments')
+    role = db.Column(db.String(35), nullable=False)
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
