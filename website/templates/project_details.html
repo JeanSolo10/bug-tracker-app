@@ -27,7 +27,7 @@
             <div class="card-body">
               <h5 class="card-title">Members</h5>
               <div class="table-wrapper">
-                <table class="table">
+                <table class="table" id="data-table-members">
                   <thead>
                     <tr>
                       <th scope="col">Name</th>
@@ -88,7 +88,7 @@
             <div class="card-body">
               <h5 class="card-title">Tickets</h5>
               <div class="table-wrapper">
-                <table class="table">
+                <table class="table" id="data-table">
                   <thead>
                     <tr>
                       <th scope="col">Title</th>
@@ -155,5 +155,24 @@
         </div>
         {% endblock %}
     </main>
+    <script>
+      $(document).ready(function () {
+        $.extend($.fn.dataTable.defaults, {
+          destroy: true,
+          paging: false,
+        });
+    
+        $("#data-table").DataTable({
+          columnDefs: [
+            {
+              target: 4,
+              searchable: false,
+              orderable: false,
+            },
+          ],
+        });
+        $("#data-table-members").DataTable();
+      });
+    </script>
 {% endblock%}
     

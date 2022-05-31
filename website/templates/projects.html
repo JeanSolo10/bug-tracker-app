@@ -15,7 +15,7 @@ main %}
     </div>
     {% if user.projects %}
     <div class="table-wrapper card px-2 py-2">
-      <table class="table">
+      <table class="table" id="data-table">
         <thead>
           <tr>
             <th scope="col" class="col-3">Project Name</th>
@@ -94,7 +94,24 @@ main %}
 </main>
 {% block nav_js%}
 <script>
-  document.getElementsByClassName("active")[0].classList.remove("active");
-  document.getElementById("projects").classList.add("active");
+  $(document).ready(function () {
+    document.getElementsByClassName("active")[0].classList.remove("active");
+    document.getElementById("projects").classList.add("active");
+    
+    $.extend($.fn.dataTable.defaults, {
+      destroy: true,
+      paging: false,
+    });
+
+    $("#data-table").DataTable({
+      columnDefs: [
+        {
+          target: 2,
+          searchable: false,
+          orderable: false,
+        },
+      ],
+    });
+  });
 </script>
 {% endblock %} {% endblock%}
