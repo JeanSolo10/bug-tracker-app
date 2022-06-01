@@ -54,9 +54,11 @@
           aria-label="multiple select example"
         >
           {% for singleUser in userList %}
-          <option value="{{singleUser.id}}">
-            {{singleUser.first_name}} {{singleUser.last_name}}
-          </option>
+            {% if singleUser.role != "admin" %}
+              <option value="{{singleUser.id}}">
+                {{singleUser.first_name}} {{singleUser.last_name}}
+              </option>
+            {% endif %}
           {% endfor %}
         </select>
       </div>
