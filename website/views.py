@@ -369,3 +369,16 @@ def admin_personnel(page_num):
                             prev_page=prev_page,
                             personnel=personnel
                             )
+
+@views.route('/project/<int:page_num>/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_project(page_num, id):
+    project = Project.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        if project:
+            db.session.delete(project)
+            db.session.commit()
+            return redirect(url_for('views.admin_projects', page_num=page_num))
+
+
+    return render_template('delete_project.html', user=current_user)
