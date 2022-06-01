@@ -328,3 +328,24 @@ def edit_ticket(id):
                             available_types=available_types,
                             available_priorities=available_priorities,
                             available_status=available_status) 
+
+# admin routes
+# projects routing #
+@views.route('/admin/projects/page/<int:page_num>')
+@login_required
+def admin_projects(page_num):
+    projects = Project.query.order_by(Project.date.desc()).paginate(per_page=20, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = projects.has_next
+    has_prev_page = projects.has_prev
+    next_page = projects.next_num
+    prev_page = projects.prev_num
+
+    return render_template("admin_projects.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            projects=projects
+                            )
