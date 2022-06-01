@@ -71,6 +71,7 @@
               ><i class="fas fa-ticket-alt fw me-3"></i
               ><span>My Tickets</span></a
             >
+            {% if user.role == "admin" %}
             <a
               href="#"
               class="list-group-item list-group-item-action py-2 ripple"
@@ -81,9 +82,9 @@
               href="#"
               class="list-group-item list-group-item-action py-2 ripple"
               id="profile"
-              ><i class="fas fa-address-card fa-fw me-3"></i
-              ><span>Profile</span></a
+              ><i class="fas fa-book-reader me-3"></i><span>All Projects</span></a
             >
+            {% endif %}
           </div>
         </div>
       </nav>
