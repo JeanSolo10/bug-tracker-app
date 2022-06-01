@@ -349,3 +349,23 @@ def admin_projects(page_num):
                             prev_page=prev_page,
                             projects=projects
                             )
+
+@views.route('/admin/personnel/page/<int:page_num>')
+@login_required
+def admin_personnel(page_num):
+    personnel = User.query.filter(User.role != "admin").paginate(per_page=20, page=page_num, error_out=True)
+    print(f'personnel: {personnel}')
+    # tickets pagination
+    has_next_page = personnel.has_next
+    has_prev_page = personnel.has_prev
+    next_page = personnel.next_num
+    prev_page = personnel.prev_num
+
+    return render_template("admin_personnel.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            personnel=personnel
+                            )
