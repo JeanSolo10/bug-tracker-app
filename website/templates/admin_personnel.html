@@ -33,7 +33,7 @@ main %}
             <td>{{member.role}}</td>
             <td class="d-flex gap-3">
               <a href="/personnel/{{personnel.page}}/{{member.id}}">Update</a>
-              <a href="#">Delete</a>
+              <a href="/personnel/{{personnel.page}}/delete/{{member.id}}">Delete</a>
             </td>
           </tr>
           {% endfor %}

@@ -439,3 +439,17 @@ def admin_update_personnel(page_num, id):
     return render_template("admin_update_personnel.html", 
                             user=current_user,
                             form=currForm)
+
+@views.route('/personnel/<int:page_num>/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(page_num, id):
+    user = User.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            flash('User deleted successfully!', category='success')
+            return redirect(url_for('views.admin_personnel', page_num=page_num))
+
+
+    return render_template('delete_user.html', user=current_user)
