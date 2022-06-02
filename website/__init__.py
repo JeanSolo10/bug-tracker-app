@@ -30,8 +30,6 @@ def create_app():
 
     from .models import User, Project, Ticket, Comment
 
-    create_database(app)
-
     # check for authenticated users and redirect accordingly
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -42,8 +40,3 @@ def create_app():
         return User.query.get(int(id))
 
     return app
-
-def create_database(app):
-    # check if database exists
-    if not path.exists('website/' + DB_NAME):
-        db.create_all(app=app)

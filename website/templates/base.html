@@ -75,6 +75,15 @@
               ><span>My Tickets</span></a
             >
             {% endif %}
+            {% if user.role != "admin" %}
+            <a
+              href="/projects/archived/page/1"
+              class="list-group-item list-group-item-action py-2 ripple"
+              id="archived-projects"
+            >
+            <i class="fas fa-archive me-3"></i><span>Archived Projects</span>
+            </a>
+            {% endif %}
             {% if user.role == "admin" %}
             <a
               href="/admin/personnel/page/1"

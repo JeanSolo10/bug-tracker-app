@@ -28,7 +28,11 @@ def home():
 @login_required
 def projects(page_num):
     
-    projectsData = current_user.projects
+    projectsData = []
+    projectsUnfilteredData = current_user.projects
+    for project in projectsUnfilteredData:
+        if project.is_closed == False:
+            projectsData.append(project)
     # sort by date dec
     projectsData.reverse()
 
@@ -58,10 +62,11 @@ def projects(page_num):
 @login_required
 def archived_projects(page_num):
     
-    projectsData = current_user.projects
-    print(f'projectData: {projectsData}')
-    for project in projectsData:
-        print(f'project: {project.is_closed}')
+    projectsData = []
+    projectsUnfilteredData = current_user.projects
+    for project in projectsUnfilteredData:
+        if project.is_closed == True:
+            projectsData.append(project)
     # sort by date dec
     projectsData.reverse()
 
@@ -154,7 +159,6 @@ def edit_project(id):
         members = request.form.getlist('members')
         isClosed = request.form.get('isClosed')
 
-        print(f'jesus: {isClosed == None}')
         if not name:
             flash('Enter name', category='error')
         elif not description:
@@ -396,7 +400,6 @@ def admin_projects(page_num):
 @login_required
 def admin_personnel(page_num):
     personnel = User.query.filter(User.role != "admin").paginate(per_page=20, page=page_num, error_out=True)
-    print(f'personnel: {personnel}')
     # tickets pagination
     has_next_page = personnel.has_next
     has_prev_page = personnel.has_prev
