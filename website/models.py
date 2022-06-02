@@ -25,6 +25,7 @@ class Project(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     project_tickets = db.relationship('Ticket', backref='ticket_project', cascade='all, delete')
+    is_closed = db.Column(db.Boolean, default=False, nullable=False)
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
