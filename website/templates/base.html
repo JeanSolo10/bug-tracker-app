@@ -84,6 +84,15 @@
             <i class="fas fa-archive me-3"></i><span>Archived Projects</span>
             </a>
             {% endif %}
+            {% if user.role != "admin" %}
+            <a
+              href="/tickets/archived/page/1"
+              class="list-group-item list-group-item-action py-2 ripple"
+              id="archived-tickets"
+            >
+            <i class="fas fa-archive me-3"></i><span>Archived Tickets</span>
+            </a>
+            {% endif %}
             {% if user.role == "admin" %}
             <a
               href="/admin/personnel/page/1"

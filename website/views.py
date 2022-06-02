@@ -239,13 +239,31 @@ def load_all_users():
 @views.route('/tickets/page/<int:page_num>')
 @login_required
 def tickets(page_num):
-    tickets = Ticket.query.filter_by(assigned_to=current_user.id).order_by(Ticket.date.desc()).paginate(per_page=15, page=page_num, error_out=True)
+    tickets = Ticket.query.filter(Ticket.status != 'Resolved', Ticket.assigned_to == current_user.id).order_by(Ticket.date.desc()).paginate(per_page=15, page=page_num, error_out=True)
     # tickets pagination
     has_next_page = tickets.has_next
     has_prev_page = tickets.has_prev
     next_page = tickets.next_num
     prev_page = tickets.prev_num
     return render_template("tickets.html",
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            tickets=tickets
+                            )
+
+@views.route('/tickets/archived/page/<int:page_num>')
+@login_required
+def archived_tickets(page_num):
+    tickets = Ticket.query.filter(Ticket.status == 'Resolved', Ticket.assigned_to == current_user.id).order_by(Ticket.date.desc()).paginate(per_page=1, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = tickets.has_next
+    has_prev_page = tickets.has_prev
+    next_page = tickets.next_num
+    prev_page = tickets.prev_num
+    return render_template("archived_tickets.html",
                             user=current_user,
                             has_next_page=has_next_page,
                             has_prev_page=has_prev_page,

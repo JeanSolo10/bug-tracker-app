@@ -7,7 +7,6 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 
 db = SQLAlchemy()
-DB_NAME = "bugtracker_db"
 
 def create_app():
     app = Flask(__name__)

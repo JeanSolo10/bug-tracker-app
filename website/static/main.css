@@ -68,6 +68,10 @@ h2 {
   text-align: center;
 }
 
+.ticket-priority-resolved {
+  text-align: center;
+}
+
 /* My Ticket page */
 .align-row-center {
   text-align: center !important;
@@ -86,4 +90,4 @@ h2 {
   position: fixed;
   margin-top: -2.75rem !important;
   z-index: 99999;
-} 
+}
