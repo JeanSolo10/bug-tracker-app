@@ -31,7 +31,10 @@ main %}
             <td>{{member.last_name}}</td>
             <td>{{member.email}}</td>
             <td>{{member.role}}</td>
-            <td><a href="#">Delete</a></td>
+            <td class="d-flex gap-3">
+              <a href="/personnel/{{personnel.page}}/{{member.id}}">Update</a>
+              <a href="#">Delete</a>
+            </td>
           </tr>
           {% endfor %}
         </tbody>

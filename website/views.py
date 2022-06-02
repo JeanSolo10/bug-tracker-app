@@ -8,6 +8,7 @@ from . import db
 from collections import Counter
 from flask_sqlalchemy import Pagination
 import types
+from werkzeug.security import generate_password_hash
 
 views = Blueprint('views', __name__)
 
@@ -378,7 +379,63 @@ def delete_project(page_num, id):
         if project:
             db.session.delete(project)
             db.session.commit()
+            flash('Project deleted successfully!', category='success')
             return redirect(url_for('views.admin_projects', page_num=page_num))
 
 
     return render_template('delete_project.html', user=current_user)
+
+@views.route('/personnel/<int:page_num>/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_update_personnel(page_num, id):
+    currForm = types.SimpleNamespace()
+    user = User.query.filter_by(id=id).first()
+    currForm.first_name = user.first_name
+    currForm.last_name = user.last_name
+    currForm.email = user.email
+    currForm.role = user.role
+
+    if request.method == 'POST':
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        email = request.form.get('email')
+        role = request.form.getlist('role')[0]
+        password = request.form.get('password')      
+
+        if email:
+            currForm.email = email
+        if first_name:
+            currForm.first_name = first_name
+        if last_name:
+            currForm.last_name = last_name
+        if role:
+            currForm.role = role
+        if role == 'Select Role':
+            flash('You must select a role', category='error')
+        elif len(email) < 5:
+            flash('Email must be greater than 4 characters', category='error')
+        elif len(first_name) < 2:
+            flash('First Name must be greater than 1 character', category='error')
+        elif len(last_name) < 2:
+            flash('Last Name must be greater than 1 character', category='error')
+        else:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.role = role
+            if password:
+                if len(password) < 7:
+                    flash('Password must be at least 7 characters.', category='error')
+                    return render_template("admin_update_personnel.html", 
+                            user=current_user,
+                            form=currForm)
+                else:
+                    user.password = generate_password_hash(password, method='sha256')
+            db.session.add(user)
+            db.session.commit()
+            flash('User updated successfully!', category='success')
+            return redirect(url_for('views.admin_personnel', page_num=page_num))
+
+    return render_template("admin_update_personnel.html", 
+                            user=current_user,
+                            form=currForm)
