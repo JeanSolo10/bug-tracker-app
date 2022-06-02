@@ -15,7 +15,11 @@ views = Blueprint('views', __name__)
 @views.route('/')
 @login_required
 def home():
-    priority_occurrences = [ticket.priority for ticket in current_user.tickets]
+    filtered_tickets = []
+    for ticket in current_user.tickets:
+        if ticket.status != 'Resolved':
+            filtered_tickets.append(ticket)
+    priority_occurrences = [ticket.priority for ticket in filtered_tickets]
     priority_labels = ["Low", "Medium", "High"]
     priority_values = [Counter(priority_occurrences)["Low"], Counter(priority_occurrences)["Medium"], Counter(priority_occurrences)["High"]]
     status_occurances = [ticket.status for ticket in current_user.tickets]
