@@ -100,7 +100,7 @@
     </main>
     {% block nav_js%}
     <script>
-      {% if tickets.items[0].status != 'Resolved' %}
+      {% if tickets.items and tickets.items[0].status != 'Resolved' %}
         document.getElementsByClassName("active")[0].classList.remove("active");
         document.getElementById("tickets").classList.add("active");
       {% else %}
