@@ -43,6 +43,11 @@ h2 {
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 
+/* Navbar logo */
+.nav-main-logo {
+  pointer-events: none;
+}
+
 /* Ticket Card  */
 .column-title,
 .comment-author {
