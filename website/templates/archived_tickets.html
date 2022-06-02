@@ -100,14 +100,14 @@
     </main>
     {% block nav_js%}
     <script>
+      {% if tickets.items[0].status != 'Resolved' %}
+        document.getElementsByClassName("active")[0].classList.remove("active");
+        document.getElementById("tickets").classList.add("active");
+      {% else %}
+        document.getElementsByClassName("active")[0].classList.remove("active");
+        document.getElementById("archived-tickets").classList.add("active");
+      {% endif %}
       $(document).ready(function () {
-        {% if tickets.items[0].status != 'Resolved' %}
-          document.getElementsByClassName("active")[0].classList.remove("active");
-          document.getElementById("tickets").classList.add("active");
-        {% else %}
-          document.getElementsByClassName("active")[0].classList.remove("active");
-          document.getElementById("archived-tickets").classList.add("active");
-        {% endif %}
         $.extend($.fn.dataTable.defaults, {
           destroy: true,
           paging: false,
