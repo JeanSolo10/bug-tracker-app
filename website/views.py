@@ -257,7 +257,7 @@ def tickets(page_num):
 @views.route('/tickets/archived/page/<int:page_num>')
 @login_required
 def archived_tickets(page_num):
-    tickets = Ticket.query.filter(Ticket.status == 'Resolved', Ticket.assigned_to == current_user.id).order_by(Ticket.date.desc()).paginate(per_page=1, page=page_num, error_out=True)
+    tickets = Ticket.query.filter(Ticket.status == 'Resolved', Ticket.assigned_to == current_user.id).order_by(Ticket.date.desc()).paginate(per_page=15, page=page_num, error_out=True)
     # tickets pagination
     has_next_page = tickets.has_next
     has_prev_page = tickets.has_prev
