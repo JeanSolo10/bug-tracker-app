@@ -4,6 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+import re
 
 db = SQLAlchemy()
 DB_NAME = "bugtracker_db"
@@ -14,7 +15,10 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     # db config
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    uri = os.getenv('DATABASE_URL')
+    if uri and uri.startswith('postgres://'):
+        uri = uri.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = uri
     db.init_app(app)
 
     from .views import views
