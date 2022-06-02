@@ -8,6 +8,7 @@ from . import db
 from collections import Counter
 from flask_sqlalchemy import Pagination
 import types
+from werkzeug.security import generate_password_hash
 
 views = Blueprint('views', __name__)
 
@@ -328,3 +329,127 @@ def edit_ticket(id):
                             available_types=available_types,
                             available_priorities=available_priorities,
                             available_status=available_status) 
+
+# admin routes
+# projects routing #
+@views.route('/admin/projects/page/<int:page_num>')
+@login_required
+def admin_projects(page_num):
+    projects = Project.query.order_by(Project.date.desc()).paginate(per_page=20, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = projects.has_next
+    has_prev_page = projects.has_prev
+    next_page = projects.next_num
+    prev_page = projects.prev_num
+
+    return render_template("admin_projects.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            projects=projects
+                            )
+
+@views.route('/admin/personnel/page/<int:page_num>')
+@login_required
+def admin_personnel(page_num):
+    personnel = User.query.filter(User.role != "admin").paginate(per_page=20, page=page_num, error_out=True)
+    print(f'personnel: {personnel}')
+    # tickets pagination
+    has_next_page = personnel.has_next
+    has_prev_page = personnel.has_prev
+    next_page = personnel.next_num
+    prev_page = personnel.prev_num
+
+    return render_template("admin_personnel.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            personnel=personnel
+                            )
+
+@views.route('/project/<int:page_num>/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_project(page_num, id):
+    project = Project.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        if project:
+            db.session.delete(project)
+            db.session.commit()
+            flash('Project deleted successfully!', category='success')
+            return redirect(url_for('views.admin_projects', page_num=page_num))
+
+
+    return render_template('delete_project.html', user=current_user)
+
+@views.route('/personnel/<int:page_num>/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_update_personnel(page_num, id):
+    currForm = types.SimpleNamespace()
+    user = User.query.filter_by(id=id).first()
+    currForm.first_name = user.first_name
+    currForm.last_name = user.last_name
+    currForm.email = user.email
+    currForm.role = user.role
+
+    if request.method == 'POST':
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        email = request.form.get('email')
+        role = request.form.getlist('role')[0]
+        password = request.form.get('password')      
+
+        if email:
+            currForm.email = email
+        if first_name:
+            currForm.first_name = first_name
+        if last_name:
+            currForm.last_name = last_name
+        if role:
+            currForm.role = role
+        if role == 'Select Role':
+            flash('You must select a role', category='error')
+        elif len(email) < 5:
+            flash('Email must be greater than 4 characters', category='error')
+        elif len(first_name) < 2:
+            flash('First Name must be greater than 1 character', category='error')
+        elif len(last_name) < 2:
+            flash('Last Name must be greater than 1 character', category='error')
+        else:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.role = role
+            if password:
+                if len(password) < 7:
+                    flash('Password must be at least 7 characters.', category='error')
+                    return render_template("admin_update_personnel.html", 
+                            user=current_user,
+                            form=currForm)
+                else:
+                    user.password = generate_password_hash(password, method='sha256')
+            db.session.add(user)
+            db.session.commit()
+            flash('User updated successfully!', category='success')
+            return redirect(url_for('views.admin_personnel', page_num=page_num))
+
+    return render_template("admin_update_personnel.html", 
+                            user=current_user,
+                            form=currForm)
+
+@views.route('/personnel/<int:page_num>/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(page_num, id):
+    user = User.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            flash('User deleted successfully!', category='success')
+            return redirect(url_for('views.admin_personnel', page_num=page_num))
+
+
+    return render_template('delete_user.html', user=current_user)

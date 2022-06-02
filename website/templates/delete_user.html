@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %} Project {% endblock %} {% block main
+    %}
+    <main style="margin-top: 48px" class="logged-in-main">
+      <div class="container pt-4">
+        {% block content %}
+        <div class="row justify-content-center">
+          <div class="col-6 card p-4">
+            <form method="POST" class="col-lg-6 offset-lg-3">
+              Click YES to confirm
+              <input type="submit" value="YES" class="btn btn-danger" />
+              <a class="my-auto" href="javascript:history.back();">Cancel</a>
+            </form>
+          </div>
+        </div>
+        {% endblock %}
+      </div>
+    </main>
+    {% endblock%}
+    

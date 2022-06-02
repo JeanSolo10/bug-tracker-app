@@ -7,29 +7,38 @@
     <div class="mb-2 card px-1 py-3">
       <h2 class="my-auto" align="center">Dashboard</h2>
     </div>
-    <div class="row justify-content-center dashboard-chart mb-3">
-      <div class="col-12 card">
-        <div class="chart-title mb-2 text-center pt-2 fw-bold">
-          Tickets By Priority
-        </div>
-        <div class="chart">
-          <canvas id="myChart"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="row justify-content-center dashboard-chart">
-      <div class="col-12 card">
-        <div class="chart-title mb-2 text-center pt-2 fw-bold">
-          Tickets By Status
-        </div>
-        <div class="chart">
-          <canvas id="myChart2"></canvas>
+    {% if user.role != "admin"%}
+      <div class="row justify-content-center dashboard-chart mb-3">
+        <div class="col-12 card">
+          <div class="chart-title mb-2 text-center pt-2 fw-bold">
+            Tickets By Priority
+          </div>
+          <div class="chart">
+            <canvas id="myChart"></canvas>
+          </div>
         </div>
       </div>
+      <div class="row justify-content-center dashboard-chart">
+        <div class="col-12 card">
+          <div class="chart-title mb-2 text-center pt-2 fw-bold">
+            Tickets By Status
+          </div>
+          <div class="chart">
+            <canvas id="myChart2"></canvas>
+          </div>
+        </div>
+      </div>
+    {% else %}
+    <div class="mb-3 card p-3">
+      <p>Welcome <strong>{{user.first_name}}</strong>!</p>
+      <p>As an administrator, you are able to delete projects and personnel of your organization.</p>
+      <p>Additionally, you are able to modify personnel's data.</p>
     </div>
+    {% endif %}
     {% endblock %}
   </div>
 </main>
+{% if user.role != "admin"%}
 <script>
   const data = {
     labels: {{ priority_labels | safe }},
@@ -146,5 +155,5 @@
 <script>
   const myChart2 = new Chart(document.getElementById("myChart2"), config2);
 </script>
-
+{% endif %}
 {% endblock%}

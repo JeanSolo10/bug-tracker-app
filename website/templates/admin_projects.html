@@ -1,0 +1,117 @@
+{% extends "base.html" %} {% block title %} All Projects {% endblock %} {% block
+main %}
+<main style="margin-top: 48px" class="logged-in-main">
+  {% block content %}
+  <div class="container-fluid pt-4">
+    <div class="card px-3 py-3 mb-2">
+      <div class="row">
+        <div class="title col-9 align-self-center">
+          <h2 class="my-auto">Projects</h2>
+        </div>
+      </div>
+    </div>
+    {% if user.role == "admin" %}
+    <div class="table-wrapper card px-2 py-2">
+      <table class="table" id="data-table">
+        <thead>
+          <tr>
+            <th scope="col" class="col-3">Project Name</th>
+            <th scope="col" class="col-7">Description</th>
+            <th scope="col" class="col-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project in projects.items %}
+          <tr>
+            <td>{{project.name}}</td>
+            <td>{{project.description}}</td>
+            <td class="d-flex gap-3">
+              <a href="/projects/{{project.id}}/details/members/1/tickets/1"
+                >Details</a
+              >
+              <a href="/project/{{projects.page}}/{{project.id}}"
+                >Delete</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if has_prev_page %}
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="{{ url_for('views.admin_projects', page_num=prev_page) }}"
+              aria-label="Previous"
+            >
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          {% endif %}
+          <li class="page-item active">
+            <a class="page-link" href="#">{{projects.page}}</a>
+          </li>
+          {% if has_next_page %}
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="{{ url_for('views.admin_projects', page_num=next_page) }}"
+              aria-label="Next"
+            >
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      <p class="page-details">
+        Showing {{projects.page}} of {{projects.pages}} pages
+      </p>
+    </div>
+    {% else %}
+    <p>No projects have been added</p>
+    {% endif %}
+  </div>
+  {% endblock %}
+</main>
+{% block nav_js%}
+<script>
+  $(document).ready(function () {
+    document.getElementsByClassName("active")[0].classList.remove("active");
+    document.getElementById("admin-projects").classList.add("active");
+
+    $.extend($.fn.dataTable.defaults, {
+      destroy: true,
+      paging: false,
+    });
+
+    $("#data-table").DataTable({
+      columnDefs: [
+        {
+          target: 2,
+          searchable: false,
+          orderable: false,
+        },
+      ],
+    });
+  });
+</script>
+{% endblock %} {% endblock%}

@@ -157,6 +157,14 @@
     </main>
     <script>
       $(document).ready(function () {
+        {% if user.role != "admin"%}
+          document.getElementsByClassName("active")[0].classList.remove("active");
+          document.getElementById("projects").classList.add("active");
+        {% else %}
+          document.getElementsByClassName("active")[0].classList.remove("active");
+          document.getElementById("admin-projects").classList.add("active");
+        {% endif %}
+
         $.extend($.fn.dataTable.defaults, {
           destroy: true,
           paging: false,
