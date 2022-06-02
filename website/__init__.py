@@ -14,7 +14,7 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     # db config
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     db.init_app(app)
 
     from .views import views
