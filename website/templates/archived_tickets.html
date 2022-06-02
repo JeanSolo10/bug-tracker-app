@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% block title %} Tickets {% endblock %} {% block main
+    %}
+    <main style="margin-top: 48px" class="logged-in-main">
+      {% block content %}
+      <div class="container-fluid pt-4">
+        <div class="card px-3 py-3 mb-2">
+          <div class="row">
+            <div class="title col-12 align-self-center">
+              <h2 class="my-auto">Tickets</h2>
+            </div>
+          </div>
+        </div>
+        {% if user.tickets %}
+        <div class="table-wrapper card px-2 py-2">
+          <table class="table" id="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Ticket Name</th>
+                <th scope="col">Project</th>
+                <th class="text-center" scope="col">Status</th>
+                <th class="text-center" scope="col">Priority</th>
+                <th class="text-center" scope="col">Type</th>
+                <th scope="col">Created on</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ticket in tickets.items %}
+              <tr>
+                <td>{{ticket.name}}</td>
+                <td>{{ticket.ticket_project.name}}</td>
+                <td class="text-center">{{ticket.status}}</td>
+                {% if ticket.priority == "Low"%}
+                <td class="ticket-priority-low">{{ticket.priority}}</td>
+                {% elif ticket.priority == "Medium" %}
+                <td class="ticket-priority-medium">{{ticket.priority}}</td>
+                {% else %}
+                <td class="ticket-priority-high">{{ticket.priority}}</td>
+                {% endif %}
+                <td class="text-center">{{ticket.type}}</td>
+                <td>{{ticket.date}}</td>
+                <td>
+                  <a
+                    href="/project/{{ticket.ticket_project.id}}/ticket/{{ticket.id}}"
+                    >Details</a
+                  >
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              {% if has_prev_page %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="{{ url_for('views.tickets', page_num=prev_page) }}"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              {% endif %}
+              <li class="page-item active">
+                <a class="page-link" href="#">{{tickets.page}}</a>
+              </li>
+              {% if has_next_page %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="{{ url_for('views.tickets', page_num=next_page) }}"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          <p class="page-details">
+            Showing {{tickets.page}} of {{tickets.pages}} pages
+          </p>
+        </div>
+        {% else %}
+        <p>No tickets have been added</p>
+        {% endif %}
+      </div>
+      {% endblock %}
+    </main>
+    {% block nav_js%}
+    <script>
+      $(document).ready(function () {
+        document.getElementsByClassName("active")[0].classList.remove("active");
+        document.getElementById("tickets").classList.add("active");
+    
+        $.extend($.fn.dataTable.defaults, {
+          destroy: true,
+          paging: false,
+        });
+    
+        $("#data-table").DataTable({
+          columnDefs: [
+            {
+              target: 6,
+              searchable: false,
+              orderable: false,
+            },
+            {
+              target: 5,
+              searchable: false,
+            },
+          ],
+        });
+      });
+    </script>
+    {% endblock %} {% endblock%}
+    

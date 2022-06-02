@@ -54,6 +54,39 @@ def projects(page_num):
                             projects=projectsPagination
                             )
 
+@views.route('/projects/archived/page/<int:page_num>')
+@login_required
+def archived_projects(page_num):
+    
+    projectsData = current_user.projects
+    print(f'projectData: {projectsData}')
+    for project in projectsData:
+        print(f'project: {project.is_closed}')
+    # sort by date dec
+    projectsData.reverse()
+
+    # projects pagination
+    projects_per_page = 15
+    start = (page_num - 1) * projects_per_page
+    end = start + projects_per_page
+    items = projectsData[start:end]
+    projectsPagination = Pagination(None, page_num, projects_per_page, len(projectsData), items)
+
+    # tickets pagination
+    has_next_page = projectsPagination.has_next
+    has_prev_page = projectsPagination.has_prev
+    next_page = projectsPagination.next_num
+    prev_page = projectsPagination.prev_num
+
+    return render_template("archived_projects.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            projects=projectsPagination
+                            )
+
 @views.route('/projects/new', methods=['GET', 'POST'])
 @login_required
 def new_project():
@@ -110,6 +143,8 @@ def edit_project(id):
     project_info.description = project.description
     project_info.owner_id = project.owner_id
     project_info.members = project.members
+    project_info.is_closed = project.is_closed
+
     users = list(set(project.members) ^ set(load_all_users()))
 
     if request.method == 'POST':
@@ -117,7 +152,9 @@ def edit_project(id):
         description = request.form.get('description')
         owner_id = request.form.get('owner_id')
         members = request.form.getlist('members')
+        isClosed = request.form.get('isClosed')
 
+        print(f'jesus: {isClosed == None}')
         if not name:
             flash('Enter name', category='error')
         elif not description:
@@ -132,6 +169,10 @@ def edit_project(id):
             project.name = name
             project.description = description
             project.owner_id = owner_id
+            if isClosed == None:
+                project.is_closed = False
+            else:
+                project.is_closed = True
             list_members = []
             for id in members:
                 member = User.query.filter_by(id=id).first()
