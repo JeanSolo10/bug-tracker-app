@@ -106,10 +106,9 @@
 </main>
 {% block nav_js%}
 <script>
+  document.getElementsByClassName("active")[0].classList.remove("active");
+  document.getElementById("tickets").classList.add("active");
   $(document).ready(function () {
-    document.getElementsByClassName("active")[0].classList.remove("active");
-    document.getElementById("tickets").classList.add("active");
-
     $.extend($.fn.dataTable.defaults, {
       destroy: true,
       paging: false,
