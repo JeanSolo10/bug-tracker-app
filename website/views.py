@@ -349,7 +349,7 @@ def edit_ticket(id):
     #users = list(set(ticket.members) ^ set(load_all_users()))
 
     project = Project.query.filter_by(id=ticket.project_reference).first()
-    available_types = ["Bug", "Enhancement"]
+    available_types = ["Bug", "Feature"]
     available_priorities = ["Low", "Medium", "High"]
     available_status = ["New", "In Progress", "Additional Info Required", "Resolved"]
 
