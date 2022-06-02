@@ -28,7 +28,12 @@ def login():
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
-            flash('Email does not exist.', category='error')
+            if not email:
+                flash('Please enter your email!', category='error')
+            elif not password:
+                flash('Please enter your password!', category='error')    
+            else:
+                flash('Email does not exist.', category='error')
 
 
     return render_template("login.html", user=current_user, form=currForm)
@@ -63,7 +68,13 @@ def sign_up():
 
         if user:
             flash('Email already exists!', category='error')
-        if role == 'Select Role':
+        elif not email:
+            flash('You must enter an email!', category='error')
+        elif not first_name:
+            flash('You must enter your first name!', category='error')
+        elif not last_name:
+            flash('You must enter your last name!', category='error')
+        elif role == 'Select Role':
             flash('You must select a role', category='error')
         elif len(email) < 5:
             flash('Email must be greater than 4 characters', category='error')
