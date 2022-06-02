@@ -4,7 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
-import re
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 DB_NAME = "bugtracker_db"
@@ -19,6 +19,7 @@ def create_app():
     if uri and uri.startswith('postgres://'):
         uri = uri.replace('postgres://', 'postgresql://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = uri
+    migrate = Migrate(app, db)
     db.init_app(app)
 
     from .views import views
