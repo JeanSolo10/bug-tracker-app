@@ -33,7 +33,7 @@ def projects(page_num):
     projectsData.reverse()
 
     # projects pagination
-    projects_per_page = 10
+    projects_per_page = 15
     start = (page_num - 1) * projects_per_page
     end = start + projects_per_page
     items = projectsData[start:end]
@@ -194,7 +194,7 @@ def load_all_users():
 @views.route('/tickets/page/<int:page_num>')
 @login_required
 def tickets(page_num):
-    tickets = Ticket.query.filter_by(assigned_to=current_user.id).order_by(Ticket.date.desc()).paginate(per_page=10, page=page_num, error_out=True)
+    tickets = Ticket.query.filter_by(assigned_to=current_user.id).order_by(Ticket.date.desc()).paginate(per_page=15, page=page_num, error_out=True)
     # tickets pagination
     has_next_page = tickets.has_next
     has_prev_page = tickets.has_prev
