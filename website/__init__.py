@@ -7,7 +7,6 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 
 db = SQLAlchemy()
-DB_NAME = "bugtracker_db"
 
 def create_app():
     app = Flask(__name__)
@@ -30,8 +29,6 @@ def create_app():
 
     from .models import User, Project, Ticket, Comment
 
-    create_database(app)
-
     # check for authenticated users and redirect accordingly
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -42,8 +39,3 @@ def create_app():
         return User.query.get(int(id))
 
     return app
-
-def create_database(app):
-    # check if database exists
-    if not path.exists('website/' + DB_NAME):
-        db.create_all(app=app)

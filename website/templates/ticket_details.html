@@ -116,4 +116,15 @@ block main %}
   </div>
   {% endblock %}
 </main>
+{% block nav_js%}
+<script>
+    {% if ticket.status != 'Resolved' %}
+      document.getElementsByClassName("active")[0].classList.remove("active");
+      document.getElementById("tickets").classList.add("active");
+    {% else %}
+      document.getElementsByClassName("active")[0].classList.remove("active");
+      document.getElementById("archived-tickets").classList.add("active");
+    {% endif %}
+</script>
+{% endblock %}
 {% endblock%}

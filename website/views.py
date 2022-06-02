@@ -28,7 +28,11 @@ def home():
 @login_required
 def projects(page_num):
     
-    projectsData = current_user.projects
+    projectsData = []
+    projectsUnfilteredData = current_user.projects
+    for project in projectsUnfilteredData:
+        if project.is_closed == False:
+            projectsData.append(project)
     # sort by date dec
     projectsData.reverse()
 
@@ -46,6 +50,40 @@ def projects(page_num):
     prev_page = projectsPagination.prev_num
 
     return render_template("projects.html", 
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            projects=projectsPagination
+                            )
+
+@views.route('/projects/archived/page/<int:page_num>')
+@login_required
+def archived_projects(page_num):
+    
+    projectsData = []
+    projectsUnfilteredData = current_user.projects
+    for project in projectsUnfilteredData:
+        if project.is_closed == True:
+            projectsData.append(project)
+    # sort by date dec
+    projectsData.reverse()
+
+    # projects pagination
+    projects_per_page = 15
+    start = (page_num - 1) * projects_per_page
+    end = start + projects_per_page
+    items = projectsData[start:end]
+    projectsPagination = Pagination(None, page_num, projects_per_page, len(projectsData), items)
+
+    # tickets pagination
+    has_next_page = projectsPagination.has_next
+    has_prev_page = projectsPagination.has_prev
+    next_page = projectsPagination.next_num
+    prev_page = projectsPagination.prev_num
+
+    return render_template("archived_projects.html", 
                             user=current_user,
                             has_next_page=has_next_page,
                             has_prev_page=has_prev_page,
@@ -110,6 +148,8 @@ def edit_project(id):
     project_info.description = project.description
     project_info.owner_id = project.owner_id
     project_info.members = project.members
+    project_info.is_closed = project.is_closed
+
     users = list(set(project.members) ^ set(load_all_users()))
 
     if request.method == 'POST':
@@ -117,6 +157,7 @@ def edit_project(id):
         description = request.form.get('description')
         owner_id = request.form.get('owner_id')
         members = request.form.getlist('members')
+        isClosed = request.form.get('isClosed')
 
         if not name:
             flash('Enter name', category='error')
@@ -132,6 +173,10 @@ def edit_project(id):
             project.name = name
             project.description = description
             project.owner_id = owner_id
+            if isClosed == None:
+                project.is_closed = False
+            else:
+                project.is_closed = True
             list_members = []
             for id in members:
                 member = User.query.filter_by(id=id).first()
@@ -194,13 +239,31 @@ def load_all_users():
 @views.route('/tickets/page/<int:page_num>')
 @login_required
 def tickets(page_num):
-    tickets = Ticket.query.filter_by(assigned_to=current_user.id).order_by(Ticket.date.desc()).paginate(per_page=15, page=page_num, error_out=True)
+    tickets = Ticket.query.filter(Ticket.status != 'Resolved', Ticket.assigned_to == current_user.id).order_by(Ticket.date.desc()).paginate(per_page=15, page=page_num, error_out=True)
     # tickets pagination
     has_next_page = tickets.has_next
     has_prev_page = tickets.has_prev
     next_page = tickets.next_num
     prev_page = tickets.prev_num
     return render_template("tickets.html",
+                            user=current_user,
+                            has_next_page=has_next_page,
+                            has_prev_page=has_prev_page,
+                            next_page=next_page,
+                            prev_page=prev_page,
+                            tickets=tickets
+                            )
+
+@views.route('/tickets/archived/page/<int:page_num>')
+@login_required
+def archived_tickets(page_num):
+    tickets = Ticket.query.filter(Ticket.status == 'Resolved', Ticket.assigned_to == current_user.id).order_by(Ticket.date.desc()).paginate(per_page=1, page=page_num, error_out=True)
+    # tickets pagination
+    has_next_page = tickets.has_next
+    has_prev_page = tickets.has_prev
+    next_page = tickets.next_num
+    prev_page = tickets.prev_num
+    return render_template("archived_tickets.html",
                             user=current_user,
                             has_next_page=has_next_page,
                             has_prev_page=has_prev_page,
@@ -355,7 +418,6 @@ def admin_projects(page_num):
 @login_required
 def admin_personnel(page_num):
     personnel = User.query.filter(User.role != "admin").paginate(per_page=20, page=page_num, error_out=True)
-    print(f'personnel: {personnel}')
     # tickets pagination
     has_next_page = personnel.has_next
     has_prev_page = personnel.has_prev

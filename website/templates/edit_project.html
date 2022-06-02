@@ -1,16 +1,10 @@
 {% extends "base.html" %} {% block title %} Project {% endblock %} {% block main
 %}
-<main style="margin-top: 48px" class="logged-in-main">
+<main style="margin-top: 58px" class="logged-in-main">
   <div class="container pt-4">
-    <div class="card px-3 py-3 mb-4">
-      <div class="row">
-        <div class="title col-12 align-self-center text-center">
-          <h2 class="my-auto">Edit Project</h2>
-        </div>
-      </div>
-    </div>
     {% block content %}
     <form method="POST">
+      <h3 align="center">Edit Project</h3>
       <div class="form-group">
         <label for="name">Project Name</label>
         <input
@@ -19,14 +13,9 @@
           id="name"
           name="name"
           placeholder="Enter name"
-          {%
-          if
-          project_info.name
-          %}
+          {% if project_info.name %}
           value="{{project_info.name}}"
-          {%
-          endif
-          %}
+          {% endif %}
         />
       </div>
       <div class="form-group">
@@ -37,14 +26,9 @@
           id="description"
           name="description"
           placeholder="Enter description"
-          {%
-          if
-          project_info.description
-          %}
+          {% if project_info.description %}
           value="{{project_info.description}}"
-          {%
-          endif
-          %}
+          {% endif %}
         />
       </div>
       <div class="form-group">
@@ -55,14 +39,9 @@
           id="owner_id"
           name="owner_id"
           placeholder="owner_id"
-          {%
-          if
-          project_info.owner_id
-          %}
+          {% if project_info.owner_id %}
           value="{{project_info.owner_id}}"
-          {%
-          endif
-          %}
+          {% endif %}
         />
       </div>
       <div class="form-group">
@@ -73,22 +52,32 @@
           multiple
           aria-label="multiple select example"
         >
-          {% for member in project_info.members %}
+        {% for member in project_info.members %}
           <option value="{{member.id}}" selected>
             {{member.first_name}} {{member.last_name}}
           </option>
-          {% endfor %} {% for user in users %}
-          <option value="{{user.id}}">
+          {% endfor %}
+          {% for user in users %}
+          <option value="{{user.id}}" >
             {{user.first_name}} {{user.last_name}}
           </option>
           {% endfor %}
         </select>
       </div>
+      <div class="form-check form-check-inline py-2 mb-2 mt-2">
+        {% if project_info.is_closed == False %}
+          <input class="form-check-input" type="checkbox" id="isClosed" value="true" name="isClosed">
+        {% else %}
+          <input class="form-check-input" type="checkbox" id="isClosed" value="true" name="isClosed" checked>
+        {% endif %}
+        <label class="form-check-label" for="isClosed">Close Project</label>
+      </div>
+      
       <br />
       <div class="d-flex gap-4">
-        <button type="submit" class="btn btn-primary">Update Project</button>
-        <a class="my-auto" href="javascript:history.back();">Cancel</a>
-      </div>
+          <button type="submit" class="btn btn-primary">Update Project</button>
+          <a class="my-auto" href="javascript:history.back();">Cancel</a>
+        </div>
     </form>
     {% endblock %}
   </div>
