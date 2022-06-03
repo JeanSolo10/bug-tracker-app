@@ -235,7 +235,7 @@ def project_details(id, t_page_num, m_page_num):
                             )
 
 def load_all_users():
-    return User.query.all()
+    return User.query.filter(User.role != "admin")
 
 # projects routing #
 
